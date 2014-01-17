@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{FCE2EB28-8558-47E9-9C7D-2FEA6A779C91}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>YuYu.Components</RootNamespace>
+    <AssemblyName>YuYu.Extensions</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\YuYu.Extensions.XML</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\YuYu.Extensions.XML</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>YuYu Technology Studio.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CNDateTime.cs" />
+    <Compile Include="Culture.cs" />
+    <Compile Include="ExtendMethodsForByteArray.cs" />
+    <Compile Include="ExtendMethodsForCultureInfo.cs" />
+    <Compile Include="ExtendMethodsForDateTime.cs" />
+    <Compile Include="ExtendMethodsForEnum.cs" />
+    <Compile Include="ExtendMethodsForGuid.cs" />
+    <Compile Include="ExtendMethodsForIEnumerable.cs" />
+    <Compile Include="ExtendMethodsForNumber.cs" />
+    <Compile Include="ExtendMethodsForObject.cs" />
+    <Compile Include="ExtendMethodsForRandom.cs" />
+    <Compile Include="ExtendMethodsForString.cs" />
+    <Compile Include="HelperBase.cs" />
+    <Compile Include="HSEBDateTime.cs" />
+    <Compile Include="Logger.cs" />
+    <Compile Include="LogType.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="YuYu Technology Studio.snk" />
+    <None Include="YuYu.Extensions.nuspec" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <PropertyGroup>
+    <PostBuildEvent>if /I "$(ConfigurationName)" == "Release" CD $(ProjectDir)/../.nuget
+if /I "$(ConfigurationName)" == "Release" Transformer.exe transform-$(ProjectDir)-$(ProjectName)-$(ConfigurationName)-$(ProjectDir)
+if /I "$(ConfigurationName)" == "Release" NuGet.exe pack $(ProjectDir)$(ProjectName).csproj -Prop Configuration=Release</PostBuildEvent>
+  </PropertyGroup>
+</Project>
