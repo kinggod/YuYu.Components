@@ -8,7 +8,6 @@ namespace YuYu.Components
     internal class BidirectionalDictionary<TFirst, TSecond>
     {
         internal Dictionary<TFirst, TSecond> FirstToSecondDictionary { get; set; }
-
         internal Dictionary<TSecond, TFirst> SecondToFirstDictionary { get; set; }
 
         internal BidirectionalDictionary()
@@ -17,10 +16,11 @@ namespace YuYu.Components
             this.SecondToFirstDictionary = new Dictionary<TSecond, TFirst>();
         }
 
-        internal BidirectionalDictionary(Dictionary<TFirst, TSecond> firstToSecondDictionary) : this()
+        internal BidirectionalDictionary(Dictionary<TFirst, TSecond> firstToSecondDictionary)
+            : this()
         {
-            foreach (TFirst current in firstToSecondDictionary.Keys)
-                this.AddValue(current, firstToSecondDictionary[current]);
+            foreach (var key in firstToSecondDictionary.Keys)
+                this.AddValue(key, firstToSecondDictionary[key]);
         }
 
         internal virtual bool ExistsInFirst(TFirst value)
@@ -30,7 +30,9 @@ namespace YuYu.Components
 
         internal virtual bool ExistsInSecond(TSecond value)
         {
-            return this.SecondToFirstDictionary.ContainsKey(value);
+            if (this.SecondToFirstDictionary.ContainsKey(value))
+                return true;
+            return false;
         }
 
         internal virtual TSecond GetSecondValue(TFirst value)

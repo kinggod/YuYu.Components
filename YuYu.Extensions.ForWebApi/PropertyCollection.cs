@@ -73,7 +73,7 @@ namespace YuYu.Components
             }
             builder.AppendLine("}");
             builder.AppendLine("}");
-            return Helper.CreateObject(builder.ToString(), new string[] { "System.dll", AppDomain.CurrentDomain.BaseDirectory + "bin\\System.Web.Mvc.dll" });
+            return HelperBase.CreateObject(builder.ToString(), new string[] { "System.dll", AppDomain.CurrentDomain.BaseDirectory + "bin\\System.Web.Mvc.dll" });
         }
 
         /// <summary>

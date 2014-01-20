@@ -34,11 +34,11 @@ namespace YuYu.Components
                         string[] temparyip = result.Split(",;".ToCharArray());
                         for (int i = 0; i < temparyip.Length; i++)
                         {
-                            if (temparyip[i].IsIPv4Format() && temparyip[i].Substring(0, 3) != "10." && temparyip[i].Substring(0, 7) != "192.168" && temparyip[i].Substring(0, 7) != "172.16.")
+                            if (temparyip[i].IsIPv4() && temparyip[i].Substring(0, 3) != "10." && temparyip[i].Substring(0, 7) != "192.168" && temparyip[i].Substring(0, 7) != "172.16.")
                                 return temparyip[i];    //找到不是内网的地址 
                         }
                     }
-                    else if (result.IsIPv4Format()) //代理即是IP格式 
+                    else if (result.IsIPv4()) //代理即是IP格式 
                         return result;
                     else
                         result = null;    //代理中的内容 非IP，取IP 

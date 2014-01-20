@@ -26,7 +26,7 @@ namespace YuYu.Components
                     directoryName = dateTime.ToString("yyyyMM");
                     break;
                 case "WW":
-                    directoryName = dateTime.ToString("yyyy") + _WeekOfYear(dateTime);
+                    directoryName = dateTime.ToString("yyyy") + dateTime.WeekOfYear().ToString("X2");
                     break;
                 case "DD":
                 default:
@@ -34,20 +34,6 @@ namespace YuYu.Components
                     break;
             }
             return directoryName;
-        }
-
-        private static string _WeekOfYear(DateTime dateTime)
-        {
-            DateTime firstDayOfYear = new DateTime(dateTime.Year, 1, 1);
-            int skipWeek = firstDayOfYear.DayOfWeek > 0 ? 1 : 0;
-            int days = dateTime.DayOfYear - (firstDayOfYear.DayOfWeek > 0 ? 7 - (int)firstDayOfYear.DayOfWeek : 0);
-            int weekOfYear = days / 7 + 1;
-            if (days % 7 > 0)
-                weekOfYear += 1;
-            if (weekOfYear > 9)
-                return weekOfYear.ToString();
-            else
-                return "0" + weekOfYear;
         }
     }
 }

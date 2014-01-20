@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
+using System.Data.Entity.Infrastructure.Pluralization;
 using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Linq;
 using System.Linq.Expressions;
@@ -78,7 +79,7 @@ namespace YuYu.Components
             {
                 if (_EnglishPluralizationService == null)
                     _EnglishPluralizationService = new EnglishPluralizationService();
-                tableName = _EnglishPluralizationService.IsSingular(modelType.Name) ? _EnglishPluralizationService.Pluralize(modelType.Name) : modelType.Name;
+                tableName =  _EnglishPluralizationService.Pluralize(modelType.Name);
             }
             else
                 tableName = modelType.Name;

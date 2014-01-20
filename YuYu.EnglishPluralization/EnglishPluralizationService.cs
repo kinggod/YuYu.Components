@@ -10,2247 +10,368 @@ namespace YuYu.Components
     /// <summary>
     /// 英语多元化服务
     /// </summary>
-    public class EnglishPluralizationService
+    public sealed class EnglishPluralizationService : IPluralizationService
     {
-        /// <summary>
-        /// 区域语言
-        /// </summary>
-        public CultureInfo Culture { get; set; }
+        private readonly BidirectionalDictionary<String, String> _userDictionary;
+        private readonly StringBidirectionalDictionary _irregularPluralsPluralizationService;
+        private readonly StringBidirectionalDictionary _assimilatedClassicalInflectionPluralizationService;
+        private readonly StringBidirectionalDictionary _oSuffixPluralizationService;
+        private readonly StringBidirectionalDictionary _classicalInflectionPluralizationService;
+        private readonly StringBidirectionalDictionary _irregularVerbPluralizationService;
+        private readonly StringBidirectionalDictionary _wordsEndingWithSePluralizationService;
+        private readonly StringBidirectionalDictionary _wordsEndingWithSisPluralizationService;
+        private readonly List<string> _knownSingluarWords;
+        private readonly List<string> _knownPluralWords;
+        private readonly CultureInfo _culture = new CultureInfo("en-US");
 
-        #region
-        private readonly BidirectionalDictionary<string, string> _UserDictionary;
-        private readonly StringBidirectionalDictionary _IrregularPluralsPluralizationService;
-        private readonly StringBidirectionalDictionary _AssimilatedClassicalInflectionPluralizationService;
-        private readonly StringBidirectionalDictionary _OSuffixPluralizationService;
-        private readonly StringBidirectionalDictionary _ClassicalInflectionPluralizationService;
-        private readonly StringBidirectionalDictionary _IrregularVerbPluralizationService;
-        private readonly StringBidirectionalDictionary _WordsEndingWithSePluralizationService;
-        private readonly StringBidirectionalDictionary _WordsEndingWithSisPluralizationService;
-        private readonly List<string> _KnownSingluarWords;
-        private readonly List<string> _KnownPluralWords;
-        private readonly string[] _UninflectiveSuffixes = new string[]
-		{
-			"fish",
-			"ois",
-			"sheep",
-			"deer",
-			"pos",
-			"itis",
-			"ism"
-		};
-        private readonly string[] _UinflectiveWords = new string[]
-		{
-			"bison",
-			"flounder",
-			"pliers",
-			"bream",
-			"gallows",
-			"proceedings",
-			"breeches",
-			"graffiti",
-			"rabies",
-			"britches",
-			"headquarters",
-			"salmon",
-			"carp",
-			"herpes",
-			"scissors",
-			"chassis",
-			"high-jinks",
-			"sea-bass",
-			"clippers",
-			"homework",
-			"series",
-			"cod",
-			"innings",
-			"shears",
-			"contretemps",
-			"jackanapes",
-			"species",
-			"corps",
-			"mackerel",
-			"swine",
-			"debris",
-			"measles",
-			"trout",
-			"diabetes",
-			"mews",
-			"tuna",
-			"djinn",
-			"mumps",
-			"whiting",
-			"eland",
-			"news",
-			"wildebeest",
-			"elk",
-			"pincers",
-			"police",
-			"hair",
-			"ice",
-			"chaos",
-			"milk",
-			"cotton",
-			"corn",
-			"millet",
-			"hay",
-			"pneumonoultramicroscopicsilicovolcanoconiosis",
-			"information",
-			"rice",
-			"tobacco",
-			"aircraft",
-			"rabies",
-			"scabies",
-			"diabetes",
-			"traffic",
-			"cotton",
-			"corn",
-			"millet",
-			"rice",
-			"hay",
-			"hemp",
-			"tobacco",
-			"cabbage",
-			"okra",
-			"broccoli",
-			"asparagus",
-			"lettuce",
-			"beef",
-			"pork",
-			"venison",
-			"bison",
-			"mutton",
-			"cattle",
-			"offspring",
-			"molasses",
-			"shambles",
-			"shingles"
-		};
-        private readonly Dictionary<string, string> _IrregularVerbList = new Dictionary<string, string>
-		{
-			{"am","are"},
-			{"are","are"},
-			{"is","are"},
-			{"was","were"},
-			{"were","were"},
-			{"has","have"},
-			{"have","have"}
-		};
-        private readonly List<string> _OronounList = new List<string>
-		{
-			"I",
-			"we",
-			"you",
-			"he",
-			"she",
-			"they",
-			"it",
-			"me",
-			"us",
-			"him",
-			"her",
-			"them",
-			"myself",
-			"ourselves",
-			"yourself",
-			"himself",
-			"herself",
-			"itself",
-			"oneself",
-			"oneselves",
-			"my",
-			"our",
-			"your",
-			"his",
-			"their",
-			"its",
-			"mine",
-			"yours",
-			"hers",
-			"theirs",
-			"this",
-			"that",
-			"these",
-			"those",
-			"all",
-			"another",
-			"any",
-			"anybody",
-			"anyone",
-			"anything",
-			"both",
-			"each",
-			"other",
-			"either",
-			"everyone",
-			"everybody",
-			"everything",
-			"most",
-			"much",
-			"nothing",
-			"nobody",
-			"none",
-			"one",
-			"others",
-			"some",
-			"somebody",
-			"someone",
-			"something",
-			"what",
-			"whatever",
-			"which",
-			"whichever",
-			"who",
-			"whoever",
-			"whom",
-			"whomever",
-			"whose"
-		};
-        private readonly Dictionary<string, string> _IrregularPluralsList = new Dictionary<string, string>
-		{
-			
-			{
-				"brother",
-				"brothers"
-			},
-			
-			{
-				"child",
-				"children"
-			},
-			
-			{
-				"cow",
-				"cows"
-			},
-			
-			{
-				"ephemeris",
-				"ephemerides"
-			},
-			
-			{
-				"genie",
-				"genies"
-			},
-			
-			{
-				"money",
-				"moneys"
-			},
-			
-			{
-				"mongoose",
-				"mongooses"
-			},
-			
-			{
-				"mythos",
-				"mythoi"
-			},
-			
-			{
-				"octopus",
-				"octopuses"
-			},
-			
-			{
-				"ox",
-				"oxen"
-			},
-			
-			{
-				"soliloquy",
-				"soliloquies"
-			},
-			
-			{
-				"trilby",
-				"trilbys"
-			},
-			
-			{
-				"crisis",
-				"crises"
-			},
-			
-			{
-				"synopsis",
-				"synopses"
-			},
-			
-			{
-				"rose",
-				"roses"
-			},
-			
-			{
-				"gas",
-				"gases"
-			},
-			
-			{
-				"bus",
-				"buses"
-			},
-			
-			{
-				"axis",
-				"axes"
-			},
-			
-			{
-				"memo",
-				"memos"
-			},
-			
-			{
-				"casino",
-				"casinos"
-			},
-			
-			{
-				"silo",
-				"silos"
-			},
-			
-			{
-				"stereo",
-				"stereos"
-			},
-			
-			{
-				"studio",
-				"studios"
-			},
-			
-			{
-				"lens",
-				"lenses"
-			},
-			
-			{
-				"alias",
-				"aliases"
-			},
-			
-			{
-				"pie",
-				"pies"
-			},
-			
-			{
-				"corpus",
-				"corpora"
-			},
-			
-			{
-				"viscus",
-				"viscera"
-			},
-			
-			{
-				"hippopotamus",
-				"hippopotami"
-			},
-			
-			{
-				"trace",
-				"traces"
-			},
-			
-			{
-				"person",
-				"people"
-			},
-			
-			{
-				"chilli",
-				"chillies"
-			},
-			
-			{
-				"analysis",
-				"analyses"
-			},
-			
-			{
-				"basis",
-				"bases"
-			},
-			
-			{
-				"neurosis",
-				"neuroses"
-			},
-			
-			{
-				"oasis",
-				"oases"
-			},
-			
-			{
-				"synthesis",
-				"syntheses"
-			},
-			
-			{
-				"thesis",
-				"theses"
-			},
-			
-			{
-				"pneumonoultramicroscopicsilicovolcanoconiosis",
-				"pneumonoultramicroscopicsilicovolcanoconioses"
-			},
-			
-			{
-				"status",
-				"statuses"
-			},
-			
-			{
-				"prospectus",
-				"prospectuses"
-			},
-			
-			{
-				"change",
-				"changes"
-			},
-			
-			{
-				"lie",
-				"lies"
-			},
-			
-			{
-				"calorie",
-				"calories"
-			},
-			
-			{
-				"freebie",
-				"freebies"
-			},
-			
-			{
-				"case",
-				"cases"
-			},
-			
-			{
-				"house",
-				"houses"
-			},
-			
-			{
-				"valve",
-				"valves"
-			},
-			
-			{
-				"cloth",
-				"clothes"
-			}
-		};
-        private readonly Dictionary<string, string> _AssimilatedClassicalInflectionList = new Dictionary<string, string>
-		{
-			
-			{
-				"alumna",
-				"alumnae"
-			},
-			
-			{
-				"alga",
-				"algae"
-			},
-			
-			{
-				"vertebra",
-				"vertebrae"
-			},
-			
-			{
-				"codex",
-				"codices"
-			},
-			
-			{
-				"murex",
-				"murices"
-			},
-			
-			{
-				"silex",
-				"silices"
-			},
-			
-			{
-				"aphelion",
-				"aphelia"
-			},
-			
-			{
-				"hyperbaton",
-				"hyperbata"
-			},
-			
-			{
-				"perihelion",
-				"perihelia"
-			},
-			
-			{
-				"asyndeton",
-				"asyndeta"
-			},
-			
-			{
-				"noumenon",
-				"noumena"
-			},
-			
-			{
-				"phenomenon",
-				"phenomena"
-			},
-			
-			{
-				"criterion",
-				"criteria"
-			},
-			
-			{
-				"organon",
-				"organa"
-			},
-			
-			{
-				"prolegomenon",
-				"prolegomena"
-			},
-			
-			{
-				"agendum",
-				"agenda"
-			},
-			
-			{
-				"datum",
-				"data"
-			},
-			
-			{
-				"extremum",
-				"extrema"
-			},
-			
-			{
-				"bacterium",
-				"bacteria"
-			},
-			
-			{
-				"desideratum",
-				"desiderata"
-			},
-			
-			{
-				"stratum",
-				"strata"
-			},
-			
-			{
-				"candelabrum",
-				"candelabra"
-			},
-			
-			{
-				"erratum",
-				"errata"
-			},
-			
-			{
-				"ovum",
-				"ova"
-			},
-			
-			{
-				"forum",
-				"fora"
-			},
-			
-			{
-				"addendum",
-				"addenda"
-			},
-			
-			{
-				"stadium",
-				"stadia"
-			},
-			
-			{
-				"automaton",
-				"automata"
-			},
-			
-			{
-				"polyhedron",
-				"polyhedra"
-			}
-		};
-        private readonly Dictionary<string, string> _OSuffixList = new Dictionary<string, string>
-		{
-			
-			{
-				"albino",
-				"albinos"
-			},
-			
-			{
-				"generalissimo",
-				"generalissimos"
-			},
-			
-			{
-				"manifesto",
-				"manifestos"
-			},
-			
-			{
-				"archipelago",
-				"archipelagos"
-			},
-			
-			{
-				"ghetto",
-				"ghettos"
-			},
-			
-			{
-				"medico",
-				"medicos"
-			},
-			
-			{
-				"armadillo",
-				"armadillos"
-			},
-			
-			{
-				"guano",
-				"guanos"
-			},
-			
-			{
-				"octavo",
-				"octavos"
-			},
-			
-			{
-				"commando",
-				"commandos"
-			},
-			
-			{
-				"inferno",
-				"infernos"
-			},
-			
-			{
-				"photo",
-				"photos"
-			},
-			
-			{
-				"ditto",
-				"dittos"
-			},
-			
-			{
-				"jumbo",
-				"jumbos"
-			},
-			
-			{
-				"pro",
-				"pros"
-			},
-			
-			{
-				"dynamo",
-				"dynamos"
-			},
-			
-			{
-				"lingo",
-				"lingos"
-			},
-			
-			{
-				"quarto",
-				"quartos"
-			},
-			
-			{
-				"embryo",
-				"embryos"
-			},
-			
-			{
-				"lumbago",
-				"lumbagos"
-			},
-			
-			{
-				"rhino",
-				"rhinos"
-			},
-			
-			{
-				"fiasco",
-				"fiascos"
-			},
-			
-			{
-				"magneto",
-				"magnetos"
-			},
-			
-			{
-				"stylo",
-				"stylos"
-			}
-		};
-        private readonly Dictionary<string, string> _ClassicalInflectionList = new Dictionary<string, string>
-		{
-			
-			{
-				"stamen",
-				"stamina"
-			},
-			
-			{
-				"foramen",
-				"foramina"
-			},
-			
-			{
-				"lumen",
-				"lumina"
-			},
-			
-			{
-				"anathema",
-				"anathemata"
-			},
-			
-			{
-				"enema",
-				"enemata"
-			},
-			
-			{
-				"oedema",
-				"oedemata"
-			},
-			
-			{
-				"bema",
-				"bemata"
-			},
-			
-			{
-				"enigma",
-				"enigmata"
-			},
-			
-			{
-				"sarcoma",
-				"sarcomata"
-			},
-			
-			{
-				"carcinoma",
-				"carcinomata"
-			},
-			
-			{
-				"gumma",
-				"gummata"
-			},
-			
-			{
-				"schema",
-				"schemata"
-			},
-			
-			{
-				"charisma",
-				"charismata"
-			},
-			
-			{
-				"lemma",
-				"lemmata"
-			},
-			
-			{
-				"soma",
-				"somata"
-			},
-			
-			{
-				"diploma",
-				"diplomata"
-			},
-			
-			{
-				"lymphoma",
-				"lymphomata"
-			},
-			
-			{
-				"stigma",
-				"stigmata"
-			},
-			
-			{
-				"dogma",
-				"dogmata"
-			},
-			
-			{
-				"magma",
-				"magmata"
-			},
-			
-			{
-				"stoma",
-				"stomata"
-			},
-			
-			{
-				"drama",
-				"dramata"
-			},
-			
-			{
-				"melisma",
-				"melismata"
-			},
-			
-			{
-				"trauma",
-				"traumata"
-			},
-			
-			{
-				"edema",
-				"edemata"
-			},
-			
-			{
-				"miasma",
-				"miasmata"
-			},
-			
-			{
-				"abscissa",
-				"abscissae"
-			},
-			
-			{
-				"formula",
-				"formulae"
-			},
-			
-			{
-				"medusa",
-				"medusae"
-			},
-			
-			{
-				"amoeba",
-				"amoebae"
-			},
-			
-			{
-				"hydra",
-				"hydrae"
-			},
-			
-			{
-				"nebula",
-				"nebulae"
-			},
-			
-			{
-				"antenna",
-				"antennae"
-			},
-			
-			{
-				"hyperbola",
-				"hyperbolae"
-			},
-			
-			{
-				"nova",
-				"novae"
-			},
-			
-			{
-				"aurora",
-				"aurorae"
-			},
-			
-			{
-				"lacuna",
-				"lacunae"
-			},
-			
-			{
-				"parabola",
-				"parabolae"
-			},
-			
-			{
-				"apex",
-				"apices"
-			},
-			
-			{
-				"latex",
-				"latices"
-			},
-			
-			{
-				"vertex",
-				"vertices"
-			},
-			
-			{
-				"cortex",
-				"cortices"
-			},
-			
-			{
-				"pontifex",
-				"pontifices"
-			},
-			
-			{
-				"vortex",
-				"vortices"
-			},
-			
-			{
-				"index",
-				"indices"
-			},
-			
-			{
-				"simplex",
-				"simplices"
-			},
-			
-			{
-				"iris",
-				"irides"
-			},
-			
-			{
-				"clitoris",
-				"clitorides"
-			},
-			
-			{
-				"alto",
-				"alti"
-			},
-			
-			{
-				"contralto",
-				"contralti"
-			},
-			
-			{
-				"soprano",
-				"soprani"
-			},
-			
-			{
-				"basso",
-				"bassi"
-			},
-			
-			{
-				"crescendo",
-				"crescendi"
-			},
-			
-			{
-				"tempo",
-				"tempi"
-			},
-			
-			{
-				"canto",
-				"canti"
-			},
-			
-			{
-				"solo",
-				"soli"
-			},
-			
-			{
-				"aquarium",
-				"aquaria"
-			},
-			
-			{
-				"interregnum",
-				"interregna"
-			},
-			
-			{
-				"quantum",
-				"quanta"
-			},
-			
-			{
-				"compendium",
-				"compendia"
-			},
-			
-			{
-				"lustrum",
-				"lustra"
-			},
-			
-			{
-				"rostrum",
-				"rostra"
-			},
-			
-			{
-				"consortium",
-				"consortia"
-			},
-			
-			{
-				"maximum",
-				"maxima"
-			},
-			
-			{
-				"spectrum",
-				"spectra"
-			},
-			
-			{
-				"cranium",
-				"crania"
-			},
-			
-			{
-				"medium",
-				"media"
-			},
-			
-			{
-				"speculum",
-				"specula"
-			},
-			
-			{
-				"curriculum",
-				"curricula"
-			},
-			
-			{
-				"memorandum",
-				"memoranda"
-			},
-			
-			{
-				"stadium",
-				"stadia"
-			},
-			
-			{
-				"dictum",
-				"dicta"
-			},
-			
-			{
-				"millenium",
-				"millenia"
-			},
-			
-			{
-				"trapezium",
-				"trapezia"
-			},
-			
-			{
-				"emporium",
-				"emporia"
-			},
-			
-			{
-				"minimum",
-				"minima"
-			},
-			
-			{
-				"ultimatum",
-				"ultimata"
-			},
-			
-			{
-				"enconium",
-				"enconia"
-			},
-			
-			{
-				"momentum",
-				"momenta"
-			},
-			
-			{
-				"vacuum",
-				"vacua"
-			},
-			
-			{
-				"gymnasium",
-				"gymnasia"
-			},
-			
-			{
-				"optimum",
-				"optima"
-			},
-			
-			{
-				"velum",
-				"vela"
-			},
-			
-			{
-				"honorarium",
-				"honoraria"
-			},
-			
-			{
-				"phylum",
-				"phyla"
-			},
-			
-			{
-				"focus",
-				"foci"
-			},
-			
-			{
-				"nimbus",
-				"nimbi"
-			},
-			
-			{
-				"succubus",
-				"succubi"
-			},
-			
-			{
-				"fungus",
-				"fungi"
-			},
-			
-			{
-				"nucleolus",
-				"nucleoli"
-			},
-			
-			{
-				"torus",
-				"tori"
-			},
-			
-			{
-				"genius",
-				"genii"
-			},
-			
-			{
-				"radius",
-				"radii"
-			},
-			
-			{
-				"umbilicus",
-				"umbilici"
-			},
-			
-			{
-				"incubus",
-				"incubi"
-			},
-			
-			{
-				"stylus",
-				"styli"
-			},
-			
-			{
-				"uterus",
-				"uteri"
-			},
-			
-			{
-				"stimulus",
-				"stimuli"
-			},
-			
-			{
-				"apparatus",
-				"apparatus"
-			},
-			
-			{
-				"impetus",
-				"impetus"
-			},
-			
-			{
-				"prospectus",
-				"prospectus"
-			},
-			
-			{
-				"cantus",
-				"cantus"
-			},
-			
-			{
-				"nexus",
-				"nexus"
-			},
-			
-			{
-				"sinus",
-				"sinus"
-			},
-			
-			{
-				"coitus",
-				"coitus"
-			},
-			
-			{
-				"plexus",
-				"plexus"
-			},
-			
-			{
-				"status",
-				"status"
-			},
-			
-			{
-				"hiatus",
-				"hiatus"
-			},
-			
-			{
-				"afreet",
-				"afreeti"
-			},
-			
-			{
-				"afrit",
-				"afriti"
-			},
-			
-			{
-				"efreet",
-				"efreeti"
-			},
-			
-			{
-				"cherub",
-				"cherubim"
-			},
-			
-			{
-				"goy",
-				"goyim"
-			},
-			
-			{
-				"seraph",
-				"seraphim"
-			},
-			
-			{
-				"alumnus",
-				"alumni"
-			}
-		};
-        private readonly List<string> _KnownConflictingPluralList = new List<string>
-		{
-			"they",
-			"them",
-			"their",
-			"have",
-			"were",
-			"yourself",
-			"are"
-		};
-        private readonly Dictionary<string, string> _WordsEndingWithSeList = new Dictionary<string, string>
-		{
-			
-			{
-				"house",
-				"houses"
-			},
-			
-			{
-				"case",
-				"cases"
-			},
-			
-			{
-				"enterprise",
-				"enterprises"
-			},
-			
-			{
-				"purchase",
-				"purchases"
-			},
-			
-			{
-				"surprise",
-				"surprises"
-			},
-			
-			{
-				"release",
-				"releases"
-			},
-			
-			{
-				"disease",
-				"diseases"
-			},
-			
-			{
-				"promise",
-				"promises"
-			},
-			
-			{
-				"refuse",
-				"refuses"
-			},
-			
-			{
-				"whose",
-				"whoses"
-			},
-			
-			{
-				"phase",
-				"phases"
-			},
-			
-			{
-				"noise",
-				"noises"
-			},
-			
-			{
-				"nurse",
-				"nurses"
-			},
-			
-			{
-				"rose",
-				"roses"
-			},
-			
-			{
-				"franchise",
-				"franchises"
-			},
-			
-			{
-				"supervise",
-				"supervises"
-			},
-			
-			{
-				"farmhouse",
-				"farmhouses"
-			},
-			
-			{
-				"suitcase",
-				"suitcases"
-			},
-			
-			{
-				"recourse",
-				"recourses"
-			},
-			
-			{
-				"impulse",
-				"impulses"
-			},
-			
-			{
-				"license",
-				"licenses"
-			},
-			
-			{
-				"diocese",
-				"dioceses"
-			},
-			
-			{
-				"excise",
-				"excises"
-			},
-			
-			{
-				"demise",
-				"demises"
-			},
-			
-			{
-				"blouse",
-				"blouses"
-			},
-			
-			{
-				"bruise",
-				"bruises"
-			},
-			
-			{
-				"misuse",
-				"misuses"
-			},
-			
-			{
-				"curse",
-				"curses"
-			},
-			
-			{
-				"prose",
-				"proses"
-			},
-			
-			{
-				"purse",
-				"purses"
-			},
-			
-			{
-				"goose",
-				"gooses"
-			},
-			
-			{
-				"tease",
-				"teases"
-			},
-			
-			{
-				"poise",
-				"poises"
-			},
-			
-			{
-				"vase",
-				"vases"
-			},
-			
-			{
-				"fuse",
-				"fuses"
-			},
-			
-			{
-				"muse",
-				"muses"
-			},
-			
-			{
-				"slaughterhouse",
-				"slaughterhouses"
-			},
-			
-			{
-				"clearinghouse",
-				"clearinghouses"
-			},
-			
-			{
-				"endonuclease",
-				"endonucleases"
-			},
-			
-			{
-				"steeplechase",
-				"steeplechases"
-			},
-			
-			{
-				"metamorphose",
-				"metamorphoses"
-			},
-			
-			{
-				"intercourse",
-				"intercourses"
-			},
-			
-			{
-				"commonsense",
-				"commonsenses"
-			},
-			
-			{
-				"intersperse",
-				"intersperses"
-			},
-			
-			{
-				"merchandise",
-				"merchandises"
-			},
-			
-			{
-				"phosphatase",
-				"phosphatases"
-			},
-			
-			{
-				"summerhouse",
-				"summerhouses"
-			},
-			
-			{
-				"watercourse",
-				"watercourses"
-			},
-			
-			{
-				"catchphrase",
-				"catchphrases"
-			},
-			
-			{
-				"compromise",
-				"compromises"
-			},
-			
-			{
-				"greenhouse",
-				"greenhouses"
-			},
-			
-			{
-				"lighthouse",
-				"lighthouses"
-			},
-			
-			{
-				"paraphrase",
-				"paraphrases"
-			},
-			
-			{
-				"mayonnaise",
-				"mayonnaises"
-			},
-			
-			{
-				"racecourse",
-				"racecourses"
-			},
-			
-			{
-				"apocalypse",
-				"apocalypses"
-			},
-			
-			{
-				"courthouse",
-				"courthouses"
-			},
-			
-			{
-				"powerhouse",
-				"powerhouses"
-			},
-			
-			{
-				"storehouse",
-				"storehouses"
-			},
-			
-			{
-				"glasshouse",
-				"glasshouses"
-			},
-			
-			{
-				"hypotenuse",
-				"hypotenuses"
-			},
-			
-			{
-				"peroxidase",
-				"peroxidases"
-			},
-			
-			{
-				"pillowcase",
-				"pillowcases"
-			},
-			
-			{
-				"roundhouse",
-				"roundhouses"
-			},
-			
-			{
-				"streetwise",
-				"streetwises"
-			},
-			
-			{
-				"expertise",
-				"expertises"
-			},
-			
-			{
-				"discourse",
-				"discourses"
-			},
-			
-			{
-				"warehouse",
-				"warehouses"
-			},
-			
-			{
-				"staircase",
-				"staircases"
-			},
-			
-			{
-				"workhouse",
-				"workhouses"
-			},
-			
-			{
-				"briefcase",
-				"briefcases"
-			},
-			
-			{
-				"clubhouse",
-				"clubhouses"
-			},
-			
-			{
-				"clockwise",
-				"clockwises"
-			},
-			
-			{
-				"concourse",
-				"concourses"
-			},
-			
-			{
-				"playhouse",
-				"playhouses"
-			},
-			
-			{
-				"turquoise",
-				"turquoises"
-			},
-			
-			{
-				"boathouse",
-				"boathouses"
-			},
-			
-			{
-				"cellulose",
-				"celluloses"
-			},
-			
-			{
-				"epitomise",
-				"epitomises"
-			},
-			
-			{
-				"gatehouse",
-				"gatehouses"
-			},
-			
-			{
-				"grandiose",
-				"grandioses"
-			},
-			
-			{
-				"menopause",
-				"menopauses"
-			},
-			
-			{
-				"penthouse",
-				"penthouses"
-			},
-			
-			{
-				"racehorse",
-				"racehorses"
-			},
-			
-			{
-				"transpose",
-				"transposes"
-			},
-			
-			{
-				"almshouse",
-				"almshouses"
-			},
-			
-			{
-				"customise",
-				"customises"
-			},
-			
-			{
-				"footloose",
-				"footlooses"
-			},
-			
-			{
-				"galvanise",
-				"galvanises"
-			},
-			
-			{
-				"princesse",
-				"princesses"
-			},
-			
-			{
-				"universe",
-				"universes"
-			},
-			
-			{
-				"workhorse",
-				"workhorses"
-			}
-		};
-        private readonly Dictionary<string, string> _WordsEndingWithSisList = new Dictionary<string, string>
-		{
-			
-			{
-				"analysis",
-				"analyses"
-			},
-			
-			{
-				"crisis",
-				"crises"
-			},
-			
-			{
-				"basis",
-				"bases"
-			},
-			
-			{
-				"atherosclerosis",
-				"atheroscleroses"
-			},
-			
-			{
-				"electrophoresis",
-				"electrophoreses"
-			},
-			
-			{
-				"psychoanalysis",
-				"psychoanalyses"
-			},
-			
-			{
-				"photosynthesis",
-				"photosyntheses"
-			},
-			
-			{
-				"amniocentesis",
-				"amniocenteses"
-			},
-			
-			{
-				"metamorphosis",
-				"metamorphoses"
-			},
-			
-			{
-				"toxoplasmosis",
-				"toxoplasmoses"
-			},
-			
-			{
-				"endometriosis",
-				"endometrioses"
-			},
-			
-			{
-				"tuberculosis",
-				"tuberculoses"
-			},
-			
-			{
-				"pathogenesis",
-				"pathogeneses"
-			},
-			
-			{
-				"osteoporosis",
-				"osteoporoses"
-			},
-			
-			{
-				"parenthesis",
-				"parentheses"
-			},
-			
-			{
-				"anastomosis",
-				"anastomoses"
-			},
-			
-			{
-				"peristalsis",
-				"peristalses"
-			},
-			
-			{
-				"hypothesis",
-				"hypotheses"
-			},
-			
-			{
-				"antithesis",
-				"antitheses"
-			},
-			
-			{
-				"apotheosis",
-				"apotheoses"
-			},
-			
-			{
-				"thrombosis",
-				"thromboses"
-			},
-			
-			{
-				"diagnosis",
-				"diagnoses"
-			},
-			
-			{
-				"synthesis",
-				"syntheses"
-			},
-			
-			{
-				"paralysis",
-				"paralyses"
-			},
-			
-			{
-				"prognosis",
-				"prognoses"
-			},
-			
-			{
-				"cirrhosis",
-				"cirrhoses"
-			},
-			
-			{
-				"sclerosis",
-				"scleroses"
-			},
-			
-			{
-				"psychosis",
-				"psychoses"
-			},
-			
-			{
-				"apoptosis",
-				"apoptoses"
-			},
-			
-			{
-				"symbiosis",
-				"symbioses"
-			}
-		};
-        #endregion
+        private readonly string[] _uninflectiveSuffixes = new[] { "fish", "ois", "sheep", "deer", "pos", "itis", "ism" };
+
+        private readonly string[] _uninflectiveWords = new[]
+        {
+            "bison", "flounder", "pliers", "bream", "gallows", "proceedings","breeches", "graffiti", "rabies", "britches", "headquarters", "salmon","carp", "herpes", "scissors", "chassis", "high-jinks", "sea-bass","clippers", "homework", "series", "cod", "innings", "shears", "contretemps","jackanapes", "species", "corps", "mackerel", "swine", "debris", "measles","trout", "diabetes", "mews", "tuna", "djinn", "mumps", "whiting", "eland","news", "wildebeest", "elk", "pincers", "police", "hair", "ice", "chaos","milk", "cotton", "corn", "millet", "hay", "pneumonoultramicroscopicsilicovolcanoconiosis","information", "rice", "tobacco", "aircraft", "rabies", "scabies", "diabetes","traffic", "cotton", "corn", "millet", "rice", "hay", "hemp", "tobacco", "cabbage","okra", "broccoli", "asparagus", "lettuce", "beef", "pork", "venison", "bison","mutton", "cattle", "offspring", "molasses", "shambles", "shingles"
+        };
+
+        private readonly Dictionary<string, string> _irregularVerbList = new Dictionary<string, string>
+        {
+            { "am", "are" },{ "are", "are" },{ "is", "are" },{ "was", "were" },{ "were", "were" },{ "has", "have" },{ "have", "have" }
+        };
+
+        private readonly List<string> _pronounList = new List<string> { "I", "we", "you", "he", "she", "they", "it", "me", "us", "him", "her", "them", "myself", "ourselves", "yourself", "himself", "herself", "itself", "oneself", "oneselves", "my", "our", "your", "his", "their", "its", "mine", "yours", "hers", "theirs", "this", "that", "these", "those", "all", "another", "any", "anybody", "anyone", "anything", "both", "each", "other", "either", "everyone", "everybody", "everything", "most", "much", "nothing", "nobody", "none", "one", "others", "some", "somebody", "someone", "something", "what", "whatever", "which", "whichever", "who", "whoever", "whom", "whomever", "whose", };
+
+        private readonly Dictionary<string, string> _irregularPluralsList = new Dictionary<string, string>
+        {
+                { "brother", "brothers" },{ "child", "children" },{ "cow", "cows" },{ "ephemeris", "ephemerides" },{ "genie", "genies" },{ "money", "moneys" },{ "mongoose", "mongooses" },{ "mythos", "mythoi" },{ "octopus", "octopuses" },{ "ox", "oxen" },{ "soliloquy", "soliloquies" },{ "trilby", "trilbys" },{ "crisis", "crises" },{ "synopsis", "synopses" },{ "rose", "roses" },{ "gas", "gases" },{ "bus", "buses" },{ "axis", "axes" },{ "memo", "memos" },{ "casino", "casinos" },{ "silo", "silos" },{ "stereo", "stereos" },{ "studio", "studios" },{ "lens", "lenses" },{ "alias", "aliases" },{ "pie", "pies" },{ "corpus", "corpora" },{ "viscus", "viscera" },{ "hippopotamus", "hippopotami" },{ "trace", "traces" },{ "person", "people" },{ "chilli", "chillies" },{ "analysis", "analyses" },{ "basis", "bases" },{ "neurosis", "neuroses" },{ "oasis", "oases" },{ "synthesis", "syntheses" },{ "thesis", "theses" },{ "pneumonoultramicroscopicsilicovolcanoconiosis", "pneumonoultramicroscopicsilicovolcanoconioses" },{ "status", "statuses" },{ "prospectus", "prospectuses" },{ "change", "changes" },{ "lie", "lies" },{ "calorie", "calories" },{ "freebie", "freebies" },{ "case", "cases" },{ "house", "houses" },{ "valve", "valves" },{ "cloth", "clothes" }
+        };
+
+        private readonly Dictionary<string, string> _assimilatedClassicalInflectionList = new Dictionary<string, string>
+        {
+                { "alumna", "alumnae" },{ "alga", "algae" },{ "vertebra", "vertebrae" },{ "codex", "codices" },{ "murex", "murices" },{ "silex", "silices" },{ "aphelion", "aphelia" },{ "hyperbaton", "hyperbata" },{ "perihelion", "perihelia" },{ "asyndeton", "asyndeta" },{ "noumenon", "noumena" },{ "phenomenon", "phenomena" },{ "criterion", "criteria" },{ "organon", "organa" },{ "prolegomenon", "prolegomena" },{ "agendum", "agenda" },{ "datum", "data" },{ "extremum", "extrema" },{ "bacterium", "bacteria" },{ "desideratum", "desiderata" },{ "stratum", "strata" },{ "candelabrum", "candelabra" },{ "erratum", "errata" },{ "ovum", "ova" },{ "forum", "fora" },{ "addendum", "addenda" },{ "stadium", "stadia" },{ "automaton", "automata" },{ "polyhedron", "polyhedra" }
+        };
+
+        private readonly Dictionary<string, string> _oSuffixList = new Dictionary<string, string>
+        {
+            { "albino", "albinos" },{ "generalissimo", "generalissimos" },{ "manifesto", "manifestos" },{ "archipelago", "archipelagos" },{ "ghetto", "ghettos" },{ "medico", "medicos" },{ "armadillo", "armadillos" },{ "guano", "guanos" },{ "octavo", "octavos" },{ "commando", "commandos" },{ "inferno", "infernos" },{ "photo", "photos" },{ "ditto", "dittos" },{ "jumbo", "jumbos" },{ "pro", "pros" },{ "dynamo", "dynamos" },{ "lingo", "lingos" },{ "quarto", "quartos" },{ "embryo", "embryos" },{ "lumbago", "lumbagos" },{ "rhino", "rhinos" },{ "fiasco", "fiascos" },{ "magneto", "magnetos" },{ "stylo", "stylos" }
+        };
+
+        private readonly Dictionary<string, string> _classicalInflectionList = new Dictionary<string, string>
+        {
+            { "stamen", "stamina" },{ "foramen", "foramina" },{ "lumen", "lumina" },{ "anathema", "anathemata" },{ "enema", "enemata" },{ "oedema", "oedemata" },{ "bema", "bemata" },{ "enigma", "enigmata" },{ "sarcoma", "sarcomata" },{ "carcinoma", "carcinomata" },{ "gumma", "gummata" },{ "schema", "schemata" },{ "charisma", "charismata" },{ "lemma", "lemmata" },{ "soma", "somata" },{ "diploma", "diplomata" },{ "lymphoma", "lymphomata" },{ "stigma", "stigmata" },{ "dogma", "dogmata" },{ "magma", "magmata" },{ "stoma", "stomata" },{ "drama", "dramata" },{ "melisma", "melismata" },{ "trauma", "traumata" },{ "edema", "edemata" },{ "miasma", "miasmata" },{ "abscissa", "abscissae" },{ "formula", "formulae" },{ "medusa", "medusae" },{ "amoeba", "amoebae" },{ "hydra", "hydrae" },{ "nebula", "nebulae" },{ "antenna", "antennae" },{ "hyperbola", "hyperbolae" },{ "nova", "novae" },{ "aurora", "aurorae" },{ "lacuna", "lacunae" },{ "parabola", "parabolae" },{ "apex", "apices" },{ "latex", "latices" },{ "vertex", "vertices" },{ "cortex", "cortices" },{ "pontifex", "pontifices" },{ "vortex", "vortices" },{ "index", "indices" },{ "simplex", "simplices" },{ "iris", "irides" },{ "clitoris", "clitorides" },{ "alto", "alti" },{ "contralto", "contralti" },{ "soprano", "soprani" },{ "basso", "bassi" },{ "crescendo", "crescendi" },{ "tempo", "tempi" },{ "canto", "canti" },{ "solo", "soli" },{ "aquarium", "aquaria" },{ "interregnum", "interregna" },{ "quantum", "quanta" },{ "compendium", "compendia" },{ "lustrum", "lustra" },{ "rostrum", "rostra" },{ "consortium", "consortia" },{ "maximum", "maxima" },{ "spectrum", "spectra" },{ "cranium", "crania" },{ "medium", "media" },{ "speculum", "specula" },{ "curriculum", "curricula" },{ "memorandum", "memoranda" },{ "stadium", "stadia" },{ "dictum", "dicta" },{ "millenium", "millenia" },{ "trapezium", "trapezia" },{ "emporium", "emporia" },{ "minimum", "minima" },{ "ultimatum", "ultimata" },{ "enconium", "enconia" },{ "momentum", "momenta" },{ "vacuum", "vacua" },{ "gymnasium", "gymnasia" },{ "optimum", "optima" },{ "velum", "vela" },{ "honorarium", "honoraria" },{ "phylum", "phyla" },{ "focus", "foci" },{ "nimbus", "nimbi" },{ "succubus", "succubi" },{ "fungus", "fungi" },{ "nucleolus", "nucleoli" },{ "torus", "tori" },{ "genius", "genii" },{ "radius", "radii" },{ "umbilicus", "umbilici" },{ "incubus", "incubi" },{ "stylus", "styli" },{ "uterus", "uteri" },{ "stimulus", "stimuli" },{ "apparatus", "apparatus" },{ "impetus", "impetus" },{ "prospectus", "prospectus" },{ "cantus", "cantus" },{ "nexus", "nexus" },{ "sinus", "sinus" },{ "coitus", "coitus" },{ "plexus", "plexus" },{ "status", "status" },{ "hiatus", "hiatus" },{ "afreet", "afreeti" },{ "afrit", "afriti" },{ "efreet", "efreeti" },{ "cherub", "cherubim" },{ "goy", "goyim" },{ "seraph", "seraphim" },{ "alumnus", "alumni" }
+        };
+
+        // this list contains all the plural words that being treated as singluar form, for example, "they" -> "they"
+        private readonly List<string> _knownConflictingPluralList = new List<string>
+        {
+            "they","them","their","have","were","yourself","are"
+        };
+
+        // this list contains the words ending with "se" and we special case these words since 
+        // we need to add a rule for "ses" singularize to "s"
+        private readonly Dictionary<string, string> _wordsEndingWithSeList = new Dictionary<string, string>
+        {
+            { "house", "houses" },{ "case", "cases" },{ "enterprise", "enterprises" },{ "purchase", "purchases" },{ "surprise", "surprises" },{ "release", "releases" },{ "disease", "diseases" },{ "promise", "promises" },{ "refuse", "refuses" },{ "whose", "whoses" },{ "phase", "phases" },{ "noise", "noises" },{ "nurse", "nurses" },{ "rose", "roses" },{ "franchise", "franchises" },{ "supervise", "supervises" },{ "farmhouse", "farmhouses" },{ "suitcase", "suitcases" },{ "recourse", "recourses" },{ "impulse", "impulses" },{ "license", "licenses" },{ "diocese", "dioceses" },{ "excise", "excises" },{ "demise", "demises" },{ "blouse", "blouses" },{ "bruise", "bruises" },{ "misuse", "misuses" },{ "curse", "curses" },{ "prose", "proses" },{ "purse", "purses" },{ "goose", "gooses" },{ "tease", "teases" },{ "poise", "poises" },{ "vase", "vases" },{ "fuse", "fuses" },{ "muse", "muses" },{ "slaughterhouse", "slaughterhouses" },{ "clearinghouse", "clearinghouses" },{ "endonuclease", "endonucleases" },{ "steeplechase", "steeplechases" },{ "metamorphose", "metamorphoses" },{ "intercourse", "intercourses" },{ "commonsense", "commonsenses" },{ "intersperse", "intersperses" },{ "merchandise", "merchandises" },{ "phosphatase", "phosphatases" },{ "summerhouse", "summerhouses" },{ "watercourse", "watercourses" },{ "catchphrase", "catchphrases" },{ "compromise", "compromises" },{ "greenhouse", "greenhouses" },{ "lighthouse", "lighthouses" },{ "paraphrase", "paraphrases" },{ "mayonnaise", "mayonnaises" },{ "racecourse", "racecourses" },{ "apocalypse", "apocalypses" },{ "courthouse", "courthouses" },{ "powerhouse", "powerhouses" },{ "storehouse", "storehouses" },{ "glasshouse", "glasshouses" },{ "hypotenuse", "hypotenuses" },{ "peroxidase", "peroxidases" },{ "pillowcase", "pillowcases" },{ "roundhouse", "roundhouses" },{ "streetwise", "streetwises" },{ "expertise", "expertises" },{ "discourse", "discourses" },{ "warehouse", "warehouses" },{ "staircase", "staircases" },{ "workhouse", "workhouses" },{ "briefcase", "briefcases" },{ "clubhouse", "clubhouses" },{ "clockwise", "clockwises" },{ "concourse", "concourses" },{ "playhouse", "playhouses" },{ "turquoise", "turquoises" },{ "boathouse", "boathouses" },{ "cellulose", "celluloses" },{ "epitomise", "epitomises" },{ "gatehouse", "gatehouses" },{ "grandiose", "grandioses" },{ "menopause", "menopauses" },{ "penthouse", "penthouses" },{ "racehorse", "racehorses" },{ "transpose", "transposes" },{ "almshouse", "almshouses" },{ "customise", "customises" },{ "footloose", "footlooses" },{ "galvanise", "galvanises" },{ "princesse", "princesses" },{ "universe", "universes" },{ "workhorse", "workhorses" }
+        };
+
+        private readonly Dictionary<string, string> _wordsEndingWithSisList = new Dictionary<string, string>
+        {
+            { "analysis", "analyses" },{ "crisis", "crises" },{ "basis", "bases" },{ "atherosclerosis", "atheroscleroses" },{ "electrophoresis", "electrophoreses" },{ "psychoanalysis", "psychoanalyses" },{ "photosynthesis", "photosyntheses" },{ "amniocentesis", "amniocenteses" },{ "metamorphosis", "metamorphoses" },{ "toxoplasmosis", "toxoplasmoses" },{ "endometriosis", "endometrioses" },{ "tuberculosis", "tuberculoses" },{ "pathogenesis", "pathogeneses" },{ "osteoporosis", "osteoporoses" },{ "parenthesis", "parentheses" },{ "anastomosis", "anastomoses" },{ "peristalsis", "peristalses" },{ "hypothesis", "hypotheses" },{ "antithesis", "antitheses" },{ "apotheosis", "apotheoses" },{ "thrombosis", "thromboses" },{ "diagnosis", "diagnoses" },{ "synthesis", "syntheses" },{ "paralysis", "paralyses" },{ "prognosis", "prognoses" },{ "cirrhosis", "cirrhoses" },{ "sclerosis", "scleroses" },{ "psychosis", "psychoses" },{ "apoptosis", "apoptoses" },{ "symbiosis", "symbioses" }
+        };
 
         /// <summary>
-        /// 构造函数
+        /// Constructs a new  instance  of default pluralization service
+        /// used in Entity Framework.
         /// </summary>
         public EnglishPluralizationService()
         {
-            this.Culture = new CultureInfo("en");
-            this._UserDictionary = new BidirectionalDictionary<string, string>();
-            this._IrregularPluralsPluralizationService = new StringBidirectionalDictionary(this._IrregularPluralsList);
-            this._AssimilatedClassicalInflectionPluralizationService = new StringBidirectionalDictionary(this._AssimilatedClassicalInflectionList);
-            this._OSuffixPluralizationService = new StringBidirectionalDictionary(this._OSuffixList);
-            this._ClassicalInflectionPluralizationService = new StringBidirectionalDictionary(this._ClassicalInflectionList);
-            this._WordsEndingWithSePluralizationService = new StringBidirectionalDictionary(this._WordsEndingWithSeList);
-            this._WordsEndingWithSisPluralizationService = new StringBidirectionalDictionary(this._WordsEndingWithSisList);
-            this._IrregularVerbPluralizationService = new StringBidirectionalDictionary(this._IrregularVerbList);
-            this._KnownSingluarWords = new List<string>(this._IrregularPluralsList.Keys.Concat(this._AssimilatedClassicalInflectionList.Keys).Concat(this._OSuffixList.Keys).Concat(this._ClassicalInflectionList.Keys).Concat(this._IrregularVerbList.Keys).Concat(this._UinflectiveWords).Except(this._KnownConflictingPluralList));
-            this._KnownPluralWords = new List<string>(this._IrregularPluralsList.Values.Concat(this._AssimilatedClassicalInflectionList.Values).Concat(this._OSuffixList.Values).Concat(this._ClassicalInflectionList.Values).Concat(this._IrregularVerbList.Values).Concat(this._UinflectiveWords));
+            _userDictionary = new BidirectionalDictionary<string, string>();
+            _irregularPluralsPluralizationService = new StringBidirectionalDictionary(_irregularPluralsList);
+            _assimilatedClassicalInflectionPluralizationService = new StringBidirectionalDictionary(_assimilatedClassicalInflectionList);
+            _oSuffixPluralizationService = new StringBidirectionalDictionary(_oSuffixList);
+            _classicalInflectionPluralizationService = new StringBidirectionalDictionary(_classicalInflectionList);
+            _wordsEndingWithSePluralizationService = new StringBidirectionalDictionary(_wordsEndingWithSeList);
+            _wordsEndingWithSisPluralizationService = new StringBidirectionalDictionary(_wordsEndingWithSisList);
+            // verb
+            _irregularVerbPluralizationService = new StringBidirectionalDictionary(_irregularVerbList);
+            _knownSingluarWords = new List<string>(_irregularPluralsList.Keys.Concat(_assimilatedClassicalInflectionList.Keys).Concat(_oSuffixList.Keys).Concat(_classicalInflectionList.Keys).Concat(_irregularVerbList.Keys).Concat(_uninflectiveWords).Except(_knownConflictingPluralList)); // see the _knowConflictingPluralList comment above
+            _knownPluralWords = new List<string>(_irregularPluralsList.Values.Concat(_assimilatedClassicalInflectionList.Values).Concat(_oSuffixList.Values).Concat(_classicalInflectionList.Values).Concat(_irregularVerbList.Values).Concat(_uninflectiveWords));
         }
 
         /// <summary>
-        /// 是复数的
+        /// Constructs a new  instance  of default pluralization service
+        /// used in Entity Framework.
         /// </summary>
-        /// <param name="word"></param>
-        /// <returns></returns>
-        public bool IsPlural(string word)
+        /// <param name="userDictionaryEntries">
+        ///     A collection of user dictionary entries to be used by this service.These inputs
+        ///     can  customize the service according the user needs.
+        /// </param>
+        public EnglishPluralizationService(IEnumerable<CustomPluralizationEntry> userDictionaryEntries)
+            : this()
         {
-            return this._UserDictionary.ExistsInSecond(word) || (!this._UserDictionary.ExistsInFirst(word) && (this._IsUninflective(word) || this._KnownPluralWords.Contains(word.ToLower(this.Culture)) || !this.Singularize(word).Equals(word)));
+            if (userDictionaryEntries == null)
+                throw new ArgumentNullException("userDictionaryEntries");
+            foreach (CustomPluralizationEntry entry in userDictionaryEntries)
+                _userDictionary.AddValue(entry.Singular, entry.Plural);
         }
 
-        /// <summary>
-        /// 是单数的
-        /// </summary>
-        /// <param name="word"></param>
-        /// <returns></returns>
-        public bool IsSingular(string word)
-        {
-            return this._UserDictionary.ExistsInFirst(word) || (!this._UserDictionary.ExistsInSecond(word) && (this._IsUninflective(word) || this._KnownSingluarWords.Contains(word.ToLower(this.Culture)) || (!this._IsNoOpWord(word) && this.Singularize(word).Equals(word))));
-        }
-
-        /// <summary>
-        /// 转换为复数
-        /// </summary>
-        /// <param name="word"></param>
-        /// <returns></returns>
+        // CONSIDER optimize the algorithm by collecting all the special cases to one single dictionary
+        /// <summary>Returns the plural form of the specified word.</summary>
+        /// <returns>The plural form of the input parameter.</returns>
+        /// <param name="word">The word to be made plural.</param>
         public string Pluralize(string word)
         {
-            return this._Capitalize(word, new Func<string, string>(this._InternalPluralize));
+            return Capitalize(word, InternalPluralize);
         }
 
-        /// <summary>
-        /// 转换为单数
-        /// </summary>
-        /// <param name="word"></param>
-        /// <returns></returns>
+        private string InternalPluralize(string word)
+        {
+            // words that we know of
+            if (_userDictionary.ExistsInFirst(word))
+                return _userDictionary.GetSecondValue(word);
+            if (IsNoOpWord(word))
+                return word;
+            string prefixWord, suffixWord = GetSuffixWord(word, out prefixWord);
+            // by me -> by me
+            if (IsNoOpWord(suffixWord))
+                return prefixWord + suffixWord;
+            // handle the word that do not inflect in the plural form
+            if (IsUninflective(suffixWord))
+                return prefixWord + suffixWord;
+            // if word is one of the known plural forms, then just return
+            if (_knownPluralWords.Contains(suffixWord.ToLowerInvariant())
+                || IsPlural(suffixWord))
+                return prefixWord + suffixWord;
+            // handle irregular plurals, e.g. "ox" -> "oxen"
+            if (_irregularPluralsPluralizationService.ExistsInFirst(suffixWord))
+                return prefixWord + _irregularPluralsPluralizationService.GetSecondValue(suffixWord);
+            string newSuffixWord;
+            // handle irregular inflections for common suffixes, e.g. "mouse" -> "mice"
+            if (PluralizationServiceUtil.TryInflectOnSuffixInWord(suffixWord, new List<string> { "man" }, (s) => s.Remove(s.Length - 2, 2) + "en", _culture, out newSuffixWord))
+                return prefixWord + newSuffixWord;
+            if (PluralizationServiceUtil.TryInflectOnSuffixInWord(suffixWord, new List<string> { "louse", "mouse" }, (s) => s.Remove(s.Length - 4, 4) + "ice", _culture, out newSuffixWord))
+                return prefixWord + newSuffixWord;
+            if (PluralizationServiceUtil.TryInflectOnSuffixInWord(suffixWord, new List<string> { "tooth" }, (s) => s.Remove(s.Length - 4, 4) + "eeth", _culture, out newSuffixWord))
+                return prefixWord + newSuffixWord;
+            if (PluralizationServiceUtil.TryInflectOnSuffixInWord(suffixWord, new List<string> { "goose" }, (s) => s.Remove(s.Length - 4, 4) + "eese", _culture, out newSuffixWord))
+                return prefixWord + newSuffixWord;
+            if (PluralizationServiceUtil.TryInflectOnSuffixInWord(suffixWord, new List<string> { "foot" }, (s) => s.Remove(s.Length - 3, 3) + "eet", _culture, out newSuffixWord))
+                return prefixWord + newSuffixWord;
+            if (PluralizationServiceUtil.TryInflectOnSuffixInWord(suffixWord, new List<string> { "zoon" }, (s) => s.Remove(s.Length - 3, 3) + "oa", _culture, out newSuffixWord))
+                return prefixWord + newSuffixWord;
+            if (PluralizationServiceUtil.TryInflectOnSuffixInWord(suffixWord, new List<string> { "cis", "sis", "xis" }, (s) => s.Remove(s.Length - 2, 2) + "es", _culture, out newSuffixWord))
+                return prefixWord + newSuffixWord;
+            // handle assimilated classical inflections, e.g. vertebra -> vertebrae
+            if (_assimilatedClassicalInflectionPluralizationService.ExistsInFirst(suffixWord))
+                return prefixWord + _assimilatedClassicalInflectionPluralizationService.GetSecondValue(suffixWord);
+            // Handle the classical variants of modern inflections
+            // CONSIDER here is the only place we took the classical variants instead of the anglicized
+            if (_classicalInflectionPluralizationService.ExistsInFirst(suffixWord))
+                return prefixWord + _classicalInflectionPluralizationService.GetSecondValue(suffixWord);
+            if (PluralizationServiceUtil.TryInflectOnSuffixInWord(suffixWord, new List<string> { "trix" }, (s) => s.Remove(s.Length - 1, 1) + "ces", _culture, out newSuffixWord))
+                return prefixWord + newSuffixWord;
+            if (PluralizationServiceUtil.TryInflectOnSuffixInWord(suffixWord, new List<string> { "eau", "ieu" }, (s) => s + "x", _culture, out newSuffixWord))
+                return prefixWord + newSuffixWord;
+            if (PluralizationServiceUtil.TryInflectOnSuffixInWord(suffixWord, new List<string> { "inx", "anx", "ynx" }, (s) => s.Remove(s.Length - 1, 1) + "ges", _culture, out newSuffixWord))
+                return prefixWord + newSuffixWord;
+            // [cs]h and ss that take es as plural form
+            if (PluralizationServiceUtil.TryInflectOnSuffixInWord(suffixWord, new List<string> { "ch", "sh", "ss" }, (s) => s + "es", _culture, out newSuffixWord))
+                return prefixWord + newSuffixWord;
+            // f, fe that take ves as plural form
+            if (PluralizationServiceUtil.TryInflectOnSuffixInWord(suffixWord, new List<string> { "alf", "elf", "olf", "eaf", "arf" }, (s) => s.EndsWith("deaf", true, _culture) ? s : s.Remove(s.Length - 1, 1) + "ves", _culture, out newSuffixWord))
+                return prefixWord + newSuffixWord;
+            if (PluralizationServiceUtil.TryInflectOnSuffixInWord(suffixWord, new List<string> { "nife", "life", "wife" }, (s) => s.Remove(s.Length - 2, 2) + "ves", _culture, out newSuffixWord))
+                return prefixWord + newSuffixWord;
+            // y takes ys as plural form if preceded by a vowel, but ies if preceded by a consonant, e.g. stays, skies
+            if (PluralizationServiceUtil.TryInflectOnSuffixInWord(suffixWord, new List<string> { "ay", "ey", "iy", "oy", "uy" }, (s) => s + "s", _culture, out newSuffixWord))
+                return prefixWord + newSuffixWord;
+            // CONSIDER proper noun handling, Marys, Tonys, ignore for now
+            if (suffixWord.EndsWith("y", true, _culture))
+                return prefixWord + suffixWord.Remove(suffixWord.Length - 1, 1) + "ies";
+            // handle some of the words o -> os, and [vowel]o -> os, and the rest are o->oes
+            if (_oSuffixPluralizationService.ExistsInFirst(suffixWord))
+                return prefixWord + _oSuffixPluralizationService.GetSecondValue(suffixWord);
+            if (PluralizationServiceUtil.TryInflectOnSuffixInWord(suffixWord, new List<string> { "ao", "eo", "io", "oo", "uo" }, (s) => s + "s", _culture, out newSuffixWord))
+                return prefixWord + newSuffixWord;
+            if (suffixWord.EndsWith("o", true, _culture))
+                return prefixWord + suffixWord + "es";
+            if (suffixWord.EndsWith("x", true, _culture))
+                return prefixWord + suffixWord + "es";
+            // cats, bags, hats, speakers
+            return prefixWord + suffixWord + "s";
+        }
+
+        /// <summary>Returns the singular form of the specified word.</summary>
+        /// <returns>The singular form of the input parameter.</returns>
+        /// <param name="word">The word to be made singular.</param>
         public string Singularize(string word)
         {
-            return this._Capitalize(word, new Func<string, string>(this._InternalSingularize));
+            return Capitalize(word, InternalSingularize);
         }
 
-        #region
-        private string _InternalPluralize(string word)
+        private string InternalSingularize(string word)
         {
-            if (this._UserDictionary.ExistsInFirst(word))
-                return this._UserDictionary.GetSecondValue(word);
-            if (this._IsNoOpWord(word))
+            // words that we know of
+            if (_userDictionary.ExistsInSecond(word))
+                return _userDictionary.GetFirstValue(word);
+            if (IsNoOpWord(word))
                 return word;
-            string str;
-            string suffixWord = this._GetSuffixWord(word, out str);
-            if (this._IsNoOpWord(suffixWord))
-                return str + suffixWord;
-            if (this._IsUninflective(suffixWord))
-                return str + suffixWord;
-            if (this._KnownPluralWords.Contains(suffixWord.ToLowerInvariant()) || this.IsPlural(suffixWord))
-                return str + suffixWord;
-            if (this._IrregularPluralsPluralizationService.ExistsInFirst(suffixWord))
-                return str + this._IrregularPluralsPluralizationService.GetSecondValue(suffixWord);
-            string str2;
-            if (PluralizationServiceUtil.TryInflectOnSuffixInWord(suffixWord, new List<string> { "man" }, (string s) => s.Remove(s.Length - 2, 2) + "en", this.Culture, out str2))
-                return str + str2;
-            if (PluralizationServiceUtil.TryInflectOnSuffixInWord(suffixWord, new List<string> { "louse", "mouse" }, (string s) => s.Remove(s.Length - 4, 4) + "ice", this.Culture, out str2))
-                return str + str2;
-            if (PluralizationServiceUtil.TryInflectOnSuffixInWord(suffixWord, new List<string> { "tooth" }, (string s) => s.Remove(s.Length - 4, 4) + "eeth", this.Culture, out str2))
-                return str + str2;
-            if (PluralizationServiceUtil.TryInflectOnSuffixInWord(suffixWord, new List<string> { "goose" }, (string s) => s.Remove(s.Length - 4, 4) + "eese", this.Culture, out str2))
-                return str + str2;
-            if (PluralizationServiceUtil.TryInflectOnSuffixInWord(suffixWord, new List<string> { "foot" }, (string s) => s.Remove(s.Length - 3, 3) + "eet", this.Culture, out str2))
-                return str + str2;
-            if (PluralizationServiceUtil.TryInflectOnSuffixInWord(suffixWord, new List<string> { "zoon" }, (string s) => s.Remove(s.Length - 3, 3) + "oa", this.Culture, out str2))
-                return str + str2;
-            if (PluralizationServiceUtil.TryInflectOnSuffixInWord(suffixWord, new List<string> { "cis", "sis", "xis" }, (string s) => s.Remove(s.Length - 2, 2) + "es", this.Culture, out str2))
-                return str + str2;
-            if (this._AssimilatedClassicalInflectionPluralizationService.ExistsInFirst(suffixWord))
-                return str + this._AssimilatedClassicalInflectionPluralizationService.GetSecondValue(suffixWord);
-            if (this._ClassicalInflectionPluralizationService.ExistsInFirst(suffixWord))
-                return str + this._ClassicalInflectionPluralizationService.GetSecondValue(suffixWord);
-            if (PluralizationServiceUtil.TryInflectOnSuffixInWord(suffixWord, new List<string> { "trix" }, (string s) => s.Remove(s.Length - 1, 1) + "ces", this.Culture, out str2))
-                return str + str2;
-            if (PluralizationServiceUtil.TryInflectOnSuffixInWord(suffixWord, new List<string> { "eau", "ieu" }, (string s) => s + "x", this.Culture, out str2))
-                return str + str2;
-            if (PluralizationServiceUtil.TryInflectOnSuffixInWord(suffixWord, new List<string> { "inx", "anx", "ynx" }, (string s) => s.Remove(s.Length - 1, 1) + "ges", this.Culture, out str2))
-                return str + str2;
-            if (PluralizationServiceUtil.TryInflectOnSuffixInWord(suffixWord, new List<string> { "ch", "sh", "ss" }, (string s) => s + "es", this.Culture, out str2))
-                return str + str2;
-            if (PluralizationServiceUtil.TryInflectOnSuffixInWord(suffixWord, new List<string> { "alf", "elf", "olf", "eaf", "arf" }, delegate(string s)
+            string prefixWord, suffixWord = GetSuffixWord(word, out prefixWord);
+            if (IsNoOpWord(suffixWord))
+                return prefixWord + suffixWord;
+            // handle the word that is the same as the plural form
+            if (IsUninflective(suffixWord))
+                return prefixWord + suffixWord;
+            // if word is one of the known singular words, then just return
+            if (_knownSingluarWords.Contains(suffixWord.ToLowerInvariant()))
+                return prefixWord + suffixWord;
+            // handle simple irregular verbs, e.g. was -> were
+            if (_irregularVerbPluralizationService.ExistsInSecond(suffixWord))
+                return prefixWord + _irregularVerbPluralizationService.GetFirstValue(suffixWord);
+            // handle irregular plurals, e.g. "ox" -> "oxen"
+            if (_irregularPluralsPluralizationService.ExistsInSecond(suffixWord))
+                return prefixWord + _irregularPluralsPluralizationService.GetFirstValue(suffixWord);
+            // handle singluarization for words ending with sis and pluralized to ses, 
+            // e.g. "ses" -> "sis"
+            if (_wordsEndingWithSisPluralizationService.ExistsInSecond(suffixWord))
+                return prefixWord + _wordsEndingWithSisPluralizationService.GetFirstValue(suffixWord);
+            // handle words ending with se, e.g. "ses" -> "se"
+            if (_wordsEndingWithSePluralizationService.ExistsInSecond(suffixWord))
+                return prefixWord + _wordsEndingWithSePluralizationService.GetFirstValue(suffixWord);
+            string newSuffixWord;
+            // handle irregular inflections for common suffixes, e.g. "mouse" -> "mice"
+            if (PluralizationServiceUtil.TryInflectOnSuffixInWord(suffixWord, new List<string> { "men" }, (s) => s.Remove(s.Length - 2, 2) + "an", _culture, out newSuffixWord))
+                return prefixWord + newSuffixWord;
+            if (PluralizationServiceUtil.TryInflectOnSuffixInWord(suffixWord, new List<string> { "lice", "mice" }, (s) => s.Remove(s.Length - 3, 3) + "ouse", _culture, out newSuffixWord))
+                return prefixWord + newSuffixWord;
+            if (PluralizationServiceUtil.TryInflectOnSuffixInWord(suffixWord, new List<string> { "teeth" }, (s) => s.Remove(s.Length - 4, 4) + "ooth", _culture, out newSuffixWord))
+                return prefixWord + newSuffixWord;
+            if (PluralizationServiceUtil.TryInflectOnSuffixInWord(suffixWord, new List<string> { "geese" }, (s) => s.Remove(s.Length - 4, 4) + "oose", _culture, out newSuffixWord))
+                return prefixWord + newSuffixWord;
+            if (PluralizationServiceUtil.TryInflectOnSuffixInWord(suffixWord, new List<string> { "feet" }, (s) => s.Remove(s.Length - 3, 3) + "oot", _culture, out newSuffixWord))
+                return prefixWord + newSuffixWord;
+            if (PluralizationServiceUtil.TryInflectOnSuffixInWord(suffixWord, new List<string> { "zoa" }, (s) => s.Remove(s.Length - 2, 2) + "oon", _culture, out newSuffixWord))
+                return prefixWord + newSuffixWord;
+            // [cs]h and ss that take es as plural form, this is being moved up since the sses will be override by the ses
+            if (PluralizationServiceUtil.TryInflectOnSuffixInWord(suffixWord, new List<string> { "ches", "shes", "sses" }, (s) => s.Remove(s.Length - 2, 2), _culture, out newSuffixWord))
+                return prefixWord + newSuffixWord;
+            // handle assimilated classical inflections, e.g. vertebra -> vertebrae
+            if (_assimilatedClassicalInflectionPluralizationService.ExistsInSecond(suffixWord))
+                return prefixWord + _assimilatedClassicalInflectionPluralizationService.GetFirstValue(suffixWord);
+            // Handle the classical variants of modern inflections
+            // CONSIDER here is the only place we took the classical variants instead of the anglicized
+            if (_classicalInflectionPluralizationService.ExistsInSecond(suffixWord))
+                return prefixWord + _classicalInflectionPluralizationService.GetFirstValue(suffixWord);
+            if (PluralizationServiceUtil.TryInflectOnSuffixInWord(suffixWord, new List<string> { "trices" }, (s) => s.Remove(s.Length - 3, 3) + "x", _culture, out newSuffixWord))
+                return prefixWord + newSuffixWord;
+            if (PluralizationServiceUtil.TryInflectOnSuffixInWord(suffixWord, new List<string> { "eaux", "ieux" }, (s) => s.Remove(s.Length - 1, 1), _culture, out newSuffixWord))
+                return prefixWord + newSuffixWord;
+            if (PluralizationServiceUtil.TryInflectOnSuffixInWord(suffixWord, new List<string> { "inges", "anges", "ynges" }, (s) => s.Remove(s.Length - 3, 3) + "x", _culture, out newSuffixWord))
+                return prefixWord + newSuffixWord;
+            // f, fe that take ves as plural form
+            if (PluralizationServiceUtil.TryInflectOnSuffixInWord(suffixWord, new List<string> { "alves", "elves", "olves", "eaves", "arves" }, (s) => s.Remove(s.Length - 3, 3) + "f", _culture, out newSuffixWord))
+                return prefixWord + newSuffixWord;
+            if (PluralizationServiceUtil.TryInflectOnSuffixInWord(suffixWord, new List<string> { "nives", "lives", "wives" }, (s) => s.Remove(s.Length - 3, 3) + "fe", _culture, out newSuffixWord))
+                return prefixWord + newSuffixWord;
+            // y takes ys as plural form if preceded by a vowel, but ies if preceded by a consonant, e.g. stays, skies
+            if (PluralizationServiceUtil.TryInflectOnSuffixInWord(suffixWord, new List<string> { "ays", "eys", "iys", "oys", "uys" }, (s) => s.Remove(s.Length - 1, 1), _culture, out newSuffixWord))
+                return prefixWord + newSuffixWord;
+            // CONSIDER proper noun handling, Marys, Tonys, ignore for now
+            if (suffixWord.EndsWith("ies", true, _culture))
+                return prefixWord + suffixWord.Remove(suffixWord.Length - 3, 3) + "y";
+            // handle some of the words o -> os, and [vowel]o -> os, and the rest are o->oes
+            if (_oSuffixPluralizationService.ExistsInSecond(suffixWord))
+                return prefixWord + _oSuffixPluralizationService.GetFirstValue(suffixWord);
+            if (PluralizationServiceUtil.TryInflectOnSuffixInWord(suffixWord, new List<string> { "aos", "eos", "ios", "oos", "uos" }, (s) => suffixWord.Remove(suffixWord.Length - 1, 1), _culture, out newSuffixWord))
+                return prefixWord + newSuffixWord;
+            // CONSIDER limitation on the lines below, e.g. crisis -> crises -> cris
+            // all the word ending with sis, xis, cis, their plural form cannot be singluarized correctly,// since words ending with c and cis both will get pluralized to ces
+            // after searching the dictionary, the number of cis is just too small(7) that 
+            // we treat them as special case
+            if (PluralizationServiceUtil.TryInflectOnSuffixInWord(suffixWord, new List<string> { "ces" }, (s) => s.Remove(s.Length - 1, 1), _culture, out newSuffixWord))
+                return prefixWord + newSuffixWord;
+            if (PluralizationServiceUtil.TryInflectOnSuffixInWord(suffixWord, new List<string> { "ces", "ses", "xes" }, (s) => s.Remove(s.Length - 2, 2), _culture, out newSuffixWord))
+                return prefixWord + newSuffixWord;
+            if (suffixWord.EndsWith("oes", true, _culture))
+                return prefixWord + suffixWord.Remove(suffixWord.Length - 2, 2);
+            if (suffixWord.EndsWith("ss", true, _culture))
+                return prefixWord + suffixWord;
+            if (suffixWord.EndsWith("s", true, _culture))
+                return prefixWord + suffixWord.Remove(suffixWord.Length - 1, 1);
+            // word is a singlar
+            return prefixWord + suffixWord;
+        }
+
+        private bool IsPlural(string word)
+        {
+            if (_userDictionary.ExistsInSecond(word))
+                return true;
+            if (_userDictionary.ExistsInFirst(word))
+                return false;
+            if (IsUninflective(word) || _knownPluralWords.Contains(word.ToLower(_culture)))
+                return true;
+            else
+                return !Singularize(word).Equals(word);
+        }
+
+        #region Utils
+
+        // <summary>
+        // captalize the return word if the parameter is capitalized
+        // if word is "Table", then return "Tables"
+        // </summary>
+        private static string Capitalize(string word, Func<string, string> action)
+        {
+            string result = action(word);
+            if (IsCapitalized(word))
             {
-                if (!s.EndsWith("deaf", true, this.Culture))
-                    return s.Remove(s.Length - 1, 1) + "ves";
-                return s;
-            }, this.Culture, out str2))
-            {
-                return str + str2;
+                if (result.Length == 0)
+                    return result;
+                StringBuilder sb = new StringBuilder(result.Length);
+                sb.Append(char.ToUpperInvariant(result[0]));
+                sb.Append(result.Substring(1));
+                return sb.ToString();
             }
-            if (PluralizationServiceUtil.TryInflectOnSuffixInWord(suffixWord, new List<string>
-			{
-				"nife",
-				"life",
-				"wife"
-			}, (string s) => s.Remove(s.Length - 2, 2) + "ves", this.Culture, out str2))
-                return str + str2;
-            if (PluralizationServiceUtil.TryInflectOnSuffixInWord(suffixWord, new List<string>
-			{
-				"ay",
-				"ey",
-				"iy",
-				"oy",
-				"uy"
-			}, (string s) => s + "s", this.Culture, out str2))
-                return str + str2;
-            if (suffixWord.EndsWith("y", true, this.Culture))
-                return str + suffixWord.Remove(suffixWord.Length - 1, 1) + "ies";
-            if (this._OSuffixPluralizationService.ExistsInFirst(suffixWord))
-                return str + this._OSuffixPluralizationService.GetSecondValue(suffixWord);
-            if (PluralizationServiceUtil.TryInflectOnSuffixInWord(suffixWord, new List<string>
-			{
-				"ao",
-				"eo",
-				"io",
-				"oo",
-				"uo"
-			}, (string s) => s + "s", this.Culture, out str2))
-                return str + str2;
-            if (suffixWord.EndsWith("o", true, this.Culture))
-                return str + suffixWord + "es";
-            if (suffixWord.EndsWith("x", true, this.Culture))
-                return str + suffixWord + "es";
-            return str + suffixWord + "s";
+            else
+                return result;
         }
-        private string _InternalSingularize(string word)
+
+        // <summary>
+        // separate one combine word in to two parts, prefix word and the last word(suffix word)
+        // </summary>
+        private static string GetSuffixWord(string word, out string prefixWord)
         {
-            if (this._UserDictionary.ExistsInSecond(word))
-                return this._UserDictionary.GetFirstValue(word);
-            if (this._IsNoOpWord(word))
-                return word;
-            string str;
-            string suffixWord = this._GetSuffixWord(word, out str);
-            if (this._IsNoOpWord(suffixWord))
-                return str + suffixWord;
-            if (this._IsUninflective(suffixWord))
-                return str + suffixWord;
-            if (this._KnownSingluarWords.Contains(suffixWord.ToLowerInvariant()))
-                return str + suffixWord;
-            if (this._IrregularVerbPluralizationService.ExistsInSecond(suffixWord))
-                return str + this._IrregularVerbPluralizationService.GetFirstValue(suffixWord);
-            if (this._IrregularPluralsPluralizationService.ExistsInSecond(suffixWord))
-                return str + this._IrregularPluralsPluralizationService.GetFirstValue(suffixWord);
-            if (this._WordsEndingWithSisPluralizationService.ExistsInSecond(suffixWord))
-                return str + this._WordsEndingWithSisPluralizationService.GetFirstValue(suffixWord);
-            if (this._WordsEndingWithSePluralizationService.ExistsInSecond(suffixWord))
-                return str + this._WordsEndingWithSePluralizationService.GetFirstValue(suffixWord);
-            string str2;
-            if (PluralizationServiceUtil.TryInflectOnSuffixInWord(suffixWord, new List<string>
-			{
-				"men"
-			}, (string s) => s.Remove(s.Length - 2, 2) + "an", this.Culture, out str2))
-                return str + str2;
-            if (PluralizationServiceUtil.TryInflectOnSuffixInWord(suffixWord, new List<string>
-			{
-				"lice",
-				"mice"
-			}, (string s) => s.Remove(s.Length - 3, 3) + "ouse", this.Culture, out str2))
-                return str + str2;
-            if (PluralizationServiceUtil.TryInflectOnSuffixInWord(suffixWord, new List<string>
-			{
-				"teeth"
-			}, (string s) => s.Remove(s.Length - 4, 4) + "ooth", this.Culture, out str2))
-                return str + str2;
-            if (PluralizationServiceUtil.TryInflectOnSuffixInWord(suffixWord, new List<string>
-			{
-				"geese"
-			}, (string s) => s.Remove(s.Length - 4, 4) + "oose", this.Culture, out str2))
-                return str + str2;
-            if (PluralizationServiceUtil.TryInflectOnSuffixInWord(suffixWord, new List<string>
-			{
-				"feet"
-			}, (string s) => s.Remove(s.Length - 3, 3) + "oot", this.Culture, out str2))
-                return str + str2;
-            if (PluralizationServiceUtil.TryInflectOnSuffixInWord(suffixWord, new List<string>
-			{
-				"zoa"
-			}, (string s) => s.Remove(s.Length - 2, 2) + "oon", this.Culture, out str2))
-                return str + str2;
-            if (PluralizationServiceUtil.TryInflectOnSuffixInWord(suffixWord, new List<string>
-			{
-				"ches",
-				"shes",
-				"sses"
-			}, (string s) => s.Remove(s.Length - 2, 2), this.Culture, out str2))
-                return str + str2;
-            if (this._AssimilatedClassicalInflectionPluralizationService.ExistsInSecond(suffixWord))
-                return str + this._AssimilatedClassicalInflectionPluralizationService.GetFirstValue(suffixWord);
-            if (this._ClassicalInflectionPluralizationService.ExistsInSecond(suffixWord))
-                return str + this._ClassicalInflectionPluralizationService.GetFirstValue(suffixWord);
-            if (PluralizationServiceUtil.TryInflectOnSuffixInWord(suffixWord, new List<string>
-			{
-				"trices"
-			}, (string s) => s.Remove(s.Length - 3, 3) + "x", this.Culture, out str2))
-                return str + str2;
-            if (PluralizationServiceUtil.TryInflectOnSuffixInWord(suffixWord, new List<string>
-			{
-				"eaux",
-				"ieux"
-			}, (string s) => s.Remove(s.Length - 1, 1), this.Culture, out str2))
-                return str + str2;
-            if (PluralizationServiceUtil.TryInflectOnSuffixInWord(suffixWord, new List<string>
-			{
-				"inges",
-				"anges",
-				"ynges"
-			}, (string s) => s.Remove(s.Length - 3, 3) + "x", this.Culture, out str2))
-                return str + str2;
-            if (PluralizationServiceUtil.TryInflectOnSuffixInWord(suffixWord, new List<string>
-			{
-				"alves",
-				"elves",
-				"olves",
-				"eaves",
-				"arves"
-			}, (string s) => s.Remove(s.Length - 3, 3) + "f", this.Culture, out str2))
-                return str + str2;
-            if (PluralizationServiceUtil.TryInflectOnSuffixInWord(suffixWord, new List<string>
-			{
-				"nives",
-				"lives",
-				"wives"
-			}, (string s) => s.Remove(s.Length - 3, 3) + "fe", this.Culture, out str2))
-                return str + str2;
-            if (PluralizationServiceUtil.TryInflectOnSuffixInWord(suffixWord, new List<string>
-			{
-				"ays",
-				"eys",
-				"iys",
-				"oys",
-				"uys"
-			}, (string s) => s.Remove(s.Length - 1, 1), this.Culture, out str2))
-                return str + str2;
-            if (suffixWord.EndsWith("ies", true, this.Culture))
-                return str + suffixWord.Remove(suffixWord.Length - 3, 3) + "y";
-            if (this._OSuffixPluralizationService.ExistsInSecond(suffixWord))
-                return str + this._OSuffixPluralizationService.GetFirstValue(suffixWord);
-            if (PluralizationServiceUtil.TryInflectOnSuffixInWord(suffixWord, new List<string>
-			{
-				"aos",
-				"eos",
-				"ios",
-				"oos",
-				"uos"
-			}, (string s) => suffixWord.Remove(suffixWord.Length - 1, 1), this.Culture, out str2))
-                return str + str2;
-            if (PluralizationServiceUtil.TryInflectOnSuffixInWord(suffixWord, new List<string>
-			{
-				"ces"
-			}, (string s) => s.Remove(s.Length - 1, 1), this.Culture, out str2))
-                return str + str2;
-            if (PluralizationServiceUtil.TryInflectOnSuffixInWord(suffixWord, new List<string>
-			{
-				"ces",
-				"ses",
-				"xes"
-			}, (string s) => s.Remove(s.Length - 2, 2), this.Culture, out str2))
-                return str + str2;
-            if (suffixWord.EndsWith("oes", true, this.Culture))
-                return str + suffixWord.Remove(suffixWord.Length - 2, 2);
-            if (suffixWord.EndsWith("ss", true, this.Culture))
-                return str + suffixWord;
-            if (suffixWord.EndsWith("s", true, this.Culture))
-                return str + suffixWord.Remove(suffixWord.Length - 1, 1);
-            return str + suffixWord;
+            // use the last space to separate the words
+            int lastSpaceIndex = word.LastIndexOf(' ');
+            prefixWord = word.Substring(0, lastSpaceIndex + 1);
+            return word.Substring(lastSpaceIndex + 1);
+
+            // CONSIDER(leil): use capital letters to separate the words
         }
-        private string _Capitalize(string word, Func<string, string> action)
+
+        private static bool IsCapitalized(string word)
         {
-            string text = action(word);
-            if (!this._IsCapitalized(word))
-                return text;
-            if (text.Length == 0)
-                return text;
-            StringBuilder stringBuilder = new StringBuilder(text.Length);
-            stringBuilder.Append(char.ToUpperInvariant(text[0]));
-            stringBuilder.Append(text.Substring(1));
-            return stringBuilder.ToString();
+            return string.IsNullOrEmpty(word) ? false : char.IsUpper(word, 0);
         }
-        private string _GetSuffixWord(string word, out string prefixWord)
+
+        private static bool IsAlphabets(string word)
         {
-            int num = word.LastIndexOf(' ');
-            prefixWord = word.Substring(0, num + 1);
-            return word.Substring(num + 1);
+            // return false when the word is "[\s]*" or leading or tailing with spaces
+            // or contains non alphabetical characters
+            return string.IsNullOrEmpty(word.Trim()) || !word.Equals(word.Trim()) || Regex.IsMatch(word, "[^a-zA-Z\\s]");
         }
-        private bool _IsCapitalized(string word)
+
+        private bool IsUninflective(string word)
         {
-            return !string.IsNullOrEmpty(word) && char.IsUpper(word, 0);
+            return PluralizationServiceUtil.DoesWordContainSuffix(word, _uninflectiveSuffixes, _culture) || (!word.ToLower(_culture).Equals(word) && word.EndsWith("ese", false, _culture)) || _uninflectiveWords.Contains(word.ToLowerInvariant());
         }
-        private bool _IsAlphabets(string word)
+
+        // <summary>
+        // return true when the word is "[\s]*" or leading or tailing with spaces
+        // or contains non alphabetical characters
+        // </summary>
+        private bool IsNoOpWord(string word)
         {
-            return !string.IsNullOrEmpty(word.Trim()) && word.Equals(word.Trim()) && !Regex.IsMatch(word, "[^a-zA-Z\\s]");
+            return !IsAlphabets(word) || word.Length <= 1 || _pronounList.Contains(word.ToLowerInvariant());
         }
-        private bool _IsUninflective(string word)
-        {
-            return PluralizationServiceUtil.DoesWordContainSuffix(word, this._UninflectiveSuffixes, this.Culture) || (!word.ToLower(this.Culture).Equals(word) && word.EndsWith("ese", false, this.Culture)) || this._UinflectiveWords.Contains(word.ToLowerInvariant());
-        }
-        private bool _IsNoOpWord(string word)
-        {
-            return !this._IsAlphabets(word) || word.Length <= 1 || this._OronounList.Contains(word.ToLowerInvariant());
-        }
+
         #endregion
     }
 }
