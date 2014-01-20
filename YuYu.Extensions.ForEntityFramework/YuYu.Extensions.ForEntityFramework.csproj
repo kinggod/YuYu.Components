@@ -47,10 +47,18 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data.Entity" />
+    <Reference Include="YuYu.EnglishPluralization">
+      <HintPath>..\packages\YuYu.EnglishPluralization.4.0.0.0\lib\net40\YuYu.EnglishPluralization.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CheckAttribute.cs" />
+    <Compile Include="DefaultValueAttribute.cs" />
+    <Compile Include="ExtendMethodsForIDatabaseInitializer.cs" />
     <Compile Include="ExtendMethodsForIQueryable.cs" />
+    <Compile Include="IndexAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UniqueAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
