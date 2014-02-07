@@ -94,7 +94,7 @@ namespace YuYu.Components
         /// <exception cref="System.ArgumentNullException">format 或 args 为 null</exception>
         /// <exception cref="System.FormatException">format 无效。- 或 -格式项的索引小于零或大于等于 args 数组的长度</exception>
         /// <returns>字符串的副本，其中的格式项已替换为 args 中相应对象的字符串表示形式</returns>
-        public static string Format(this string format, params object[] args)
+        public static string FormatString(this string format, params object[] args)
         {
             return string.Format(format, args);
         }
@@ -107,7 +107,7 @@ namespace YuYu.Components
         /// <exception cref="System.ArgumentNullException">format 或 args 为 null</exception>
         /// <exception cref="System.FormatException">format 无效。- 或 -格式项的索引小于零或大于等于 args 数组的长度</exception>
         /// <returns>字符串的副本，其中的格式项已替换为 args 中相应对象的字符串表示形式</returns>
-        public static string Format(this string format, object arg0)
+        public static string FormatString(this string format, object arg0)
         {
             return string.Format(format, arg0);
         }
@@ -121,7 +121,7 @@ namespace YuYu.Components
         /// <exception cref="System.ArgumentNullException">format 或 args 为 null</exception>
         /// <exception cref="System.FormatException">format 无效。- 或 -格式项的索引小于零或大于等于 args 数组的长度</exception>
         /// <returns>字符串的副本，其中的格式项已替换为 args 中相应对象的字符串表示形式</returns>
-        public static string Format(this string format, object arg0, object arg1)
+        public static string FormatString(this string format, object arg0, object arg1)
         {
             return string.Format(format, arg0, arg1);
         }
@@ -136,7 +136,7 @@ namespace YuYu.Components
         /// <exception cref="System.ArgumentNullException">format 或 args 为 null</exception>
         /// <exception cref="System.FormatException">format 无效。- 或 -格式项的索引小于零或大于等于 args 数组的长度</exception>
         /// <returns>字符串的副本，其中的格式项已替换为 args 中相应对象的字符串表示形式</returns>
-        public static string Format(this string format, object arg0, object arg1, object arg2)
+        public static string FormatString(this string format, object arg0, object arg1, object arg2)
         {
             return string.Format(format, arg0, arg1, arg2);
         }
@@ -150,7 +150,7 @@ namespace YuYu.Components
         /// <exception cref="System.ArgumentNullException">format 或 args 为 null</exception>
         /// <exception cref="System.FormatException">format 无效。- 或 -格式项的索引小于零或大于等于 args 数组的长度</exception>
         /// <returns>字符串副本，其中的格式项已替换为 args 中相应对象的字符串表示形式</returns>
-        public static string Format(this string format, IFormatProvider provider, params object[] args)
+        public static string FormatString(this string format, IFormatProvider provider, params object[] args)
         {
             return string.Format(provider, format, args);
         }
