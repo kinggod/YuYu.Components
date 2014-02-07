@@ -48,8 +48,9 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
-    <Reference Include="YuYu.Extensions">
-      <HintPath>..\packages\YuYu.Extensions.4.5.0.0\lib\net45\YuYu.Extensions.dll</HintPath>
+    <Reference Include="YuYu.Extensions, Version=4.5.0.1, Culture=neutral, PublicKeyToken=9623a3912ff6de59, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\YuYu.Extensions.4.5.0.1\lib\net45\YuYu.Extensions.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

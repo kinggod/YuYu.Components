@@ -42,9 +42,6 @@
     <AssemblyOriginatorKeyFile>YuYu Technology Studio.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="CNDateTime.cs" />
     <Compile Include="Culture.cs" />
     <Compile Include="ExtendMethodsForByteArray.cs" />
@@ -66,6 +63,9 @@
   <ItemGroup>
     <None Include="YuYu Technology Studio.snk" />
     <None Include="YuYu.Extensions.nuspec" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
