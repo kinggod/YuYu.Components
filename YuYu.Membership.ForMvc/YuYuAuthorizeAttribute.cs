@@ -28,10 +28,19 @@ namespace YuYu.Components
         /// <param name="httpContext"></param>
         /// <param name="controllerNamespace"></param>
         /// <returns></returns>
-        protected virtual bool AuthorizeCore(HttpContextBase httpContext, string controllerNamespace = null)
+        protected virtual bool AuthorizeCore(AuthorizationContext filterContext)
         {
+            if (filterContext == null)
+                throw new ArgumentNullException("filterContext");
+            HttpContextBase httpContext = filterContext.HttpContext;
             if (httpContext == null)
                 throw new ArgumentNullException("httpContext");
+
+            if (filterContext.ActionDescriptor.GetCustomAttributes(typeof(AllowAnonymousAttribute), true).Count() > 0)
+            {
+                this.HttpStatusCode = HttpStatusCode.OK;
+                return true;
+            }
 
             this._IsAuthorized = false;
             this._HasAuthority = false;
@@ -49,9 +58,11 @@ namespace YuYu.Components
 
             #region 验证权限状态
 
-            string controllerName = httpContext.Request.RequestContext.RouteData.Values["controller"] as string, actionName = httpContext.Request.RequestContext.RouteData.Values["action"] as string;
-            controllerName += "Controller";
-            this._HasAuthority = YuYuMembership.HasAuthority(httpContext.User, actionName, controllerName, controllerNamespace);
+            Type controllerType = filterContext.Controller.GetType();
+            string @namespace = controllerType.Namespace,
+                controllerName = controllerType.Name,
+                actionName = filterContext.ActionDescriptor.ActionName;
+            this._HasAuthority = YuYuMembership.HasAuthority(httpContext.User, actionName, controllerName, @namespace);
             //权限验证不通过
             if (!this._HasAuthority)
             {
@@ -85,7 +96,7 @@ namespace YuYu.Components
             //if (skipAuthorization)
             //    return;
             string controllerNamespace = filterContext.Controller.GetType().Namespace;
-            if (AuthorizeCore(filterContext.HttpContext, controllerNamespace))
+            if (AuthorizeCore(filterContext))
             {
                 // ** IMPORTANT **
                 // Since we're performing authorization at the action level, the authorization code runs
@@ -96,7 +107,7 @@ namespace YuYu.Components
                 // the final say on whether a page should be served from the cache.
                 HttpCachePolicyBase cachePolicy = filterContext.HttpContext.Response.Cache;
                 cachePolicy.SetProxyMaxAge(new TimeSpan(0));
-                cachePolicy.AddValidationCallback(_CacheValidateHandler, controllerNamespace /* data */);
+                cachePolicy.AddValidationCallback(_CacheValidateHandler, filterContext /* data */);
             }
             else
                 HandleUnauthorizedRequest(filterContext);
@@ -115,13 +126,13 @@ namespace YuYu.Components
         /// 
         /// </summary>
         /// <param name="httpContext"></param>
-        /// <param name="controllerNamespace"></param>
+        /// <param name="filterContext"></param>
         /// <returns></returns>
-        protected virtual HttpValidationStatus OnCacheAuthorization(HttpContextBase httpContext, string controllerNamespace)
+        protected virtual HttpValidationStatus OnCacheAuthorization(HttpContextBase httpContext, AuthorizationContext filterContext)
         {
             if (httpContext == null)
                 throw new ArgumentNullException("httpContext");
-            return AuthorizeCore(httpContext, controllerNamespace) ? HttpValidationStatus.Valid : HttpValidationStatus.IgnoreThisRequest;
+            return AuthorizeCore(filterContext) ? HttpValidationStatus.Valid : HttpValidationStatus.IgnoreThisRequest;
         }
 
         #region
@@ -131,7 +142,7 @@ namespace YuYu.Components
 
         private void _CacheValidateHandler(HttpContext context, object data, ref HttpValidationStatus validationStatus)
         {
-            validationStatus = OnCacheAuthorization(new HttpContextWrapper(context), data as string);
+            validationStatus = OnCacheAuthorization(new HttpContextWrapper(context), data as AuthorizationContext);
         }
 
         #endregion
