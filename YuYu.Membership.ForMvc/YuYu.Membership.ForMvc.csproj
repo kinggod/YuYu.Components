@@ -94,6 +94,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AuthorityAttribute.cs" />
     <Compile Include="IModels\IRole.cs" />
     <Compile Include="YuYuMembership.cs" />
     <Compile Include="YuYuAuthorizeAttribute.cs" />

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+VisualStudioVersion = 12.0.30110.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YuYu.AsyncUploader", "YuYu.AsyncUploader\YuYu.AsyncUploader.csproj", "{EC9EDD40-C8A8-41FD-9181-6BFCE198AFA4}"
 EndProject
@@ -44,6 +44,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YuYu.Extensions.ForWebOptimization", "YuYu.Extensions.ForWebOptimization\YuYu.Extensions.ForWebOptimization.csproj", "{354D0B27-5F4C-4306-9164-20C5ACA3BA48}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YuYu.Staticize.ForMvc", "YuYu.Staticize.ForMvc\YuYu.Staticize.ForMvc.csproj", "{1CE49480-9E9B-4C9C-8CC2-AE18BBF7A65D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvcTest", "MvcTest\MvcTest.csproj", "{9340BB34-F4A4-42EF-AB55-A19F8A9FD413}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -119,6 +121,10 @@ Global
 		{1CE49480-9E9B-4C9C-8CC2-AE18BBF7A65D}.Debug|Any CPU.Build.0 = Release|Any CPU
 		{1CE49480-9E9B-4C9C-8CC2-AE18BBF7A65D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1CE49480-9E9B-4C9C-8CC2-AE18BBF7A65D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9340BB34-F4A4-42EF-AB55-A19F8A9FD413}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9340BB34-F4A4-42EF-AB55-A19F8A9FD413}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9340BB34-F4A4-42EF-AB55-A19F8A9FD413}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9340BB34-F4A4-42EF-AB55-A19F8A9FD413}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -42,9 +42,6 @@ namespace YuYu.Components
                 return true;
             }
 
-            this._IsAuthorized = false;
-            this._HasAuthority = false;
-
             #region 验证登录状态
 
             if (!httpContext.User.Identity.IsAuthenticated)
@@ -62,9 +59,8 @@ namespace YuYu.Components
             string @namespace = controllerType.Namespace,
                 controllerName = controllerType.Name,
                 actionName = filterContext.ActionDescriptor.ActionName;
-            this._HasAuthority = YuYuMembership.HasAuthority(httpContext.User, actionName, controllerName, @namespace);
             //权限验证不通过
-            if (!this._HasAuthority)
+            if (!YuYuMembership.HasAuthority(httpContext.User, actionName, controllerName, @namespace))
             {
                 this.HttpStatusCode = HttpStatusCode.Forbidden;
                 return false;
@@ -136,9 +132,6 @@ namespace YuYu.Components
         }
 
         #region
-
-        private bool _IsAuthorized { get; set; }
-        private bool _HasAuthority { get; set; }
 
         private void _CacheValidateHandler(HttpContext context, object data, ref HttpValidationStatus validationStatus)
         {
