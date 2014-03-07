@@ -1,16 +1,15 @@
 ﻿(function ($, __window) {
     $.fn.asyncupload = function (uploadUrl, options) {
-        var opts = $.extend({}, $.fn.asyncupload.defaults, options),
-            __this = $(this),
-            id = "YuYu_FileField_" + Math.random(),
-            html5Enable = false,
-            width = parseInt(__this.css('width')), height = parseInt(__this.css('height')),
+        var __this = $(this);
+        __this.parent().css({ position: 'relative' });
+        var opts = $.extend({}, $.fn.asyncupload.defaults, options), id = "YuYu_FileField_" + Math.random(), html5Enable = false,
+            top = __this.position().top, left = __this.position().left, width = parseInt(__this.css('width')), height = parseInt(__this.css('height')),
             marginTop = __this.css('margin-top'), marginRight = __this.css('margin-right'), marginBottom = __this.css('margin-bottom'), marginLeft = __this.css('margin-left'),
             paddingTop = __this.css('padding-top'), paddingRight = __this.css('padding-right'), paddingBottom = __this.css('padding-bottom'), paddingLeft = __this.css('padding-left'),
             borderTopStyle = __this.css('border-top-style'), borderRightStyle = __this.css('border-right-style'), borderBottomStyle = __this.css('border-bottom-style'), borderLeftStyle = __this.css('border-left-style'),
             borderTopWidth = __this.css('border-top-width'), borderRightWidth = __this.css('border-right-width'), borderBottomWidth = __this.css('border-bottom-width'), borderLeftWidth = __this.css('border-left-width'),
             borderTopColor = __this.css('border-top-color'), borderRightColor = __this.css('border-right-color'), borderBottomColor = __this.css('border-bottom-color'), borderLeftColor = __this.css('border-left-color');
-        __this.hide();
+        __this.css({ opacity: 0 });
         try {
             html5Enable = new FormData() != 'undefined';
         } catch (e) {
@@ -20,7 +19,7 @@
             yuyu_FileInfo = __this.val() == '' ? $('<span>未选择文件</span>').css({ display: 'block', marginRight: '60px', color: '#999', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }) : $('<span>已上传文件</span>').css({ display: 'block', marginRight: '60px', color: '#393', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }),
             yuyu_UploadProgress = $('<span></span>').css({ display: 'block', float: 'right', width: '60px', color: '#090', textAlign: 'right', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }),
             yuyu_UploadProgressBar = $('<div></div>').css({ width: '0', height: '0', borderBottom: (height - parseInt(height * 0.9)) + 'px solid #00f', fontSize: '0', lineHeight: '0', overflow: 'hidden' });
-        __this.after($('<div></div>').css({ width: width + 'px', height: height + 'px', marginTop: marginTop, marginRight: marginRight, marginBottom: marginBottom, marginLeft: marginLeft, paddingTop: paddingTop, paddingRight: paddingRight, paddingBottom: paddingBottom, paddingLeft: paddingLeft, borderTopStyle: borderTopStyle, borderRightStyle: borderRightStyle, borderBottomStyle: borderBottomStyle, borderLeftStyle: borderLeftStyle, borderTopWidth: borderTopWidth, borderRightWidth: borderRightWidth, borderBottomWidth: borderBottomWidth, borderLeftWidth: borderLeftWidth, borderTopColor: borderTopColor, borderRightColor: borderRightColor, borderBottomColor: borderBottomColor, borderLeftColor: borderLeftColor, borderSpacing: '1px', borderCollapse: 'collapse', fontSize: '12px' }).append($('<div></div>').css({ float: 'right', width: '70px', height: height + 'px', overflow: 'hidden', backgroundColor: '#ccc' }).append($(html5Enable ? '<div></div>' : '<div id="' + id + '"></div>').css({ position: 'relative', width: '70px', height: height + 'px', lineHeight: height + 'px', textAlign: 'center', fontSize: '12px', backgroundColor: '#ccc', overflow: 'hidden' }).append(html5Enable ? $('<span>选择文件</span>') : null).append(yuyu_FileField))).append($('<div></div>').css({ marginRight: '72px' }).append($('<div></div>').css({ height: parseInt(height * 0.9) + 'px', lineHeight: parseInt(height * 0.9) + 'px' }).append(yuyu_UploadProgress).append(yuyu_FileInfo)).append($('<div></div>').css({ width: '100%', margin: '0', padding: '0', backgroundColor: '#ccc' }).append(yuyu_UploadProgressBar))));
+        __this.after($('<div></div>').css({ position: 'absolute', top: top, left: left, width: width + 'px', height: height + 'px', marginTop: marginTop, marginRight: marginRight, marginBottom: marginBottom, marginLeft: marginLeft, paddingTop: paddingTop, paddingRight: paddingRight, paddingBottom: paddingBottom, paddingLeft: paddingLeft, borderTopStyle: borderTopStyle, borderRightStyle: borderRightStyle, borderBottomStyle: borderBottomStyle, borderLeftStyle: borderLeftStyle, borderTopWidth: borderTopWidth, borderRightWidth: borderRightWidth, borderBottomWidth: borderBottomWidth, borderLeftWidth: borderLeftWidth, borderTopColor: borderTopColor, borderRightColor: borderRightColor, borderBottomColor: borderBottomColor, borderLeftColor: borderLeftColor, borderSpacing: '1px', borderCollapse: 'collapse', fontSize: '12px' }).append($('<div></div>').css({ float: 'right', width: '70px', height: height + 'px', overflow: 'hidden', backgroundColor: '#ccc' }).append($(html5Enable ? '<div></div>' : '<div id="' + id + '"></div>').css({ position: 'relative', width: '70px', height: height + 'px', lineHeight: height + 'px', textAlign: 'center', fontSize: '12px', backgroundColor: '#ccc', overflow: 'hidden' }).append(html5Enable ? $('<span>选择文件</span>') : null).append(yuyu_FileField))).append($('<div></div>').css({ marginRight: '72px' }).append($('<div></div>').css({ height: parseInt(height * 0.9) + 'px', lineHeight: parseInt(height * 0.9) + 'px' }).append(yuyu_UploadProgress).append(yuyu_FileInfo)).append($('<div></div>').css({ width: '100%', margin: '0', padding: '0', backgroundColor: '#ccc' }).append(yuyu_UploadProgressBar))));
         if (html5Enable) {
             yuyu_FileField.change(function () {
                 var file = document.getElementById(id).files[0];

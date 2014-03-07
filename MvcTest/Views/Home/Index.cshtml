@@ -1,0 +1,78 @@
+﻿@model MvcTest.Models.EditModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+    <style type="text/css">
+        fieldset { position: relative; max-width: 710px; margin: 0 auto; padding: 0 0 10px 20px; border: 1px solid #ccc; }
+            fieldset legend { display: none; }
+            fieldset img.preview { position: absolute; right: 0; }
+        label { font-size: 1.2em; font-weight: 600; }
+        input, select, textarea { width: 240px; height: 14px; margin: 0; padding: 12px 10px; border: 1px solid #ccc; color: #333; font-size: 1em; font-weight: 500; font-family: verdana; vertical-align: middle; }
+        select { width: 262px; height: 40px; padding: 11px 10px; }
+        textarea { width: 500px; resize: none; }
+            input:focus, textarea:focus, select:focus { outline: none; box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(255, 51, 51, 0.6); }
+        input[type=number] { width: 120px; }
+        input[type=checkbox], input[type=radio] { width: auto; height: auto; padding: 0; border: none 0; vertical-align: middle; background: transparent; }
+            input[type=radio] + label, input[type=checkbox] + label, input[type=checkbox] + input[type=hidden] + label { font-size: 13px; vertical-align: middle; }
+        input[type=submit], input[type=reset], input[type=button], button { width: auto; height: 40px; padding: 0 12px; *padding: 0 4px !important; color: #333; background-color: #ddd; cursor: pointer; font-size: 1.25em; font-weight: bold; font-family: Microsoft Yahei,Verdana,MSYH,'微软雅黑'; }
+            input[type=submit]:hover, input[type=reset]:hover, input[type=button]:hover, button:hover { box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(255, 51, 51, 0.6); color: #f33; }
+        input + input[type=checkbox], input + input[type=radio], input + input[type=submit], input + input[type=reset], input + input[type=button], input + button { margin-left: 10px; *margin-left: 10px !important; }
+        input[type=hidden] + input { margin: 0; }
+        input.filebox { width: 158px; vertical-align: middle; }
+            input.filebox + span.filebox { display: inline-block; position: relative; width: 80px; height: 31px; line-height: 31px; vertical-align: middle; background-color: #efefef; border: 1px solid #cccccc; border-radius: 5px; text-align: center; overflow: hidden; }
+                input.filebox + span.filebox input { position: absolute; top: -1px; right: -1px; height: 31px; padding: 0 7px; opacity: 0; filter: alpha(opacity=0); }
+        .editor-label { padding: 12px 0 2px 0; }
+        .error { color: #f00; font-weight: bold; padding-bottom: 10px; }
+        .field-validation-error { color: #f00; font-weight: bold; }
+        .field-validation-valid { display: none; }
+        input.input-validation-error, textarea.input-validation-error { border: 1px solid #f00; }
+            input.input-validation-error:focus, textarea.input-validation-error:focus { box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(255, 0, 0, 0.6); }
+        input[type="checkbox"].input-validation-error { border: 0 none; }
+        .validation-summary-errors { color: #f00; font-weight: bold; font-size: 1.1em; }
+        .validation-summary-valid { display: none; }
+        form.link input, form.link input:hover { box-shadow: none; background: none; background-color: transparent; }
+    </style>
+</head>
+<body>
+    <script src="~/Scripts/jquery-1.8.3.min.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/Scripts/jquery.asyncupload.js?t=@DateTime.Now.Ticks"></script>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+
+        <fieldset>
+            <legend>EditModel</legend>
+
+            <div class="editor-label">
+                @Html.LabelFor(model => model.Image)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(model => model.Image)
+                @Html.ValidationMessageFor(model => model.Image)
+            </div>
+
+            <p>
+                <input type="submit" value="Create" />
+            </p>
+        </fieldset>
+    }
+
+    <script type="text/javascript">
+        $(function () {
+            $('#Image').asyncupload('', {});
+        });
+    </script>
+</body>
+</html>

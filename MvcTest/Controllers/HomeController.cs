@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MvcTest.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -12,8 +13,12 @@ namespace MvcTest.Controllers
         //
         // GET: /Home/
 
-        [Authority(Display = "")]
         public ActionResult Index()
+        {
+            return View();
+        }
+        [HttpPost]
+        public ActionResult Index(EditModel model)
         {
             return View();
         }
