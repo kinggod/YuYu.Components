@@ -47,7 +47,7 @@ namespace YuYu.Components
                 if (!Directory.Exists(logsDirectory))
                     Directory.CreateDirectory(logsDirectory);
                 string filePath = logsDirectory + DateTime.Now.Date.ToString("yyyyMMdd") + ".log";
-                File.AppendAllText(filePath, Environment.NewLine + DateTime.Now.ToString() + Environment.NewLine + type + Environment.NewLine + Environment.NewLine + message, Encoding.UTF8);
+                File.AppendAllText(filePath, DateTime.Now.ToString() + "\t" + type + Environment.NewLine + message + Environment.NewLine + Environment.NewLine, Encoding.UTF8);
                 return true;
             }
             catch (Exception)
