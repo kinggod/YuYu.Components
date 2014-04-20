@@ -89,7 +89,7 @@
   <PropertyGroup>
     <PostBuildEvent>if /I "$(ConfigurationName)" == "Release" CD $(ProjectDir)/../.nuget
 if /I "$(ConfigurationName)" == "Release" Transformer.exe transform-$(ProjectDir)-$(ProjectName)-$(ConfigurationName)-$(ProjectDir)
-if /I "$(ConfigurationName)" == "Release" NuGet.exe pack $(ProjectDir)$(ProjectName).csproj -Prop Configuration=Release</PostBuildEvent>
+if /I "$(ConfigurationName)" == "Release" NuGet.exe pack $(ProjectPath) -Properties Configuration=Release</PostBuildEvent>
   </PropertyGroup>
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
