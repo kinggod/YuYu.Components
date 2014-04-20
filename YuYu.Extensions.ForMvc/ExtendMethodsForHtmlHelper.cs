@@ -127,6 +127,21 @@ namespace YuYu.Components
         /// <returns></returns>
         public static MvcHtmlString DropDownListFor<TModel, TValue>(this HtmlHelper<TModel> htmlHelper, Expression<Func<TModel, TValue>> expression, IDictionary<string, IEnumerable<SelectListItem>> selectList, object htmlAttributes = null)
         {
+            return htmlHelper.DropDownListFor(expression, selectList.ToDictionary(m => m.Key, m => m.Value.ToDictionary(mm => mm, mm => null as object) as IDictionary<SelectListItem, object>), htmlAttributes);
+        }
+
+        /// <summary>
+        /// 创建一个具有分组下拉选项的下拉框
+        /// </summary>
+        /// <typeparam name="TModel"></typeparam>
+        /// <typeparam name="TValue"></typeparam>
+        /// <param name="htmlHelper"></param>
+        /// <param name="expression"></param>
+        /// <param name="selectList"></param>
+        /// <param name="htmlAttributes"></param>
+        /// <returns></returns>
+        public static MvcHtmlString DropDownListFor<TModel, TValue>(this HtmlHelper<TModel> htmlHelper, Expression<Func<TModel, TValue>> expression, IDictionary<string, IDictionary<SelectListItem, object>> selectList, object htmlAttributes = null)
+        {
             if (expression == null)
                 throw new ArgumentNullException("expression");
             bool allowMultiple = false;
@@ -144,7 +159,7 @@ namespace YuYu.Components
                     o = htmlHelper.ViewData.Eval(name);
                 if (o == null)
                     throw new InvalidOperationException("无效的下拉项集合！");
-                selectList = o as IDictionary<string, IEnumerable<SelectListItem>>;
+                selectList = o as IDictionary<string, IDictionary<SelectListItem, object>>;
                 if (selectList == null)
                     throw new InvalidOperationException("无效的下拉项集合！");
                 usedViewData = true;
@@ -176,7 +191,7 @@ namespace YuYu.Components
                 var selectedValues = new HashSet<string>(values, StringComparer.OrdinalIgnoreCase);
                 foreach (var keyValuePair in selectList)
                     foreach (var item in keyValuePair.Value)
-                        item.Selected = (item.Value != null) ? selectedValues.Contains(item.Value) : selectedValues.Contains(item.Text);
+                        item.Key.Selected = (item.Key.Value != null) ? selectedValues.Contains(item.Key.Value) : selectedValues.Contains(item.Key.Text);
             }
             var listItemGroupBuilder = new StringBuilder();
             foreach (var keyValuePair in selectList)
@@ -184,11 +199,13 @@ namespace YuYu.Components
                 StringBuilder stringBuilder = new StringBuilder();
                 foreach (var item in keyValuePair.Value)
                 {
-                    TagBuilder optionTagBuilder = new TagBuilder("option") { InnerHtml = HttpUtility.HtmlEncode(item.Text) };
-                    if (item.Value != null)
-                        optionTagBuilder.Attributes["value"] = item.Value;
-                    if (item.Selected)
+                    TagBuilder optionTagBuilder = new TagBuilder("option") { InnerHtml = HttpUtility.HtmlEncode(item.Key.Text) };
+                    if (item.Key.Value != null)
+                        optionTagBuilder.Attributes["value"] = item.Key.Value;
+                    if (item.Key.Selected)
                         optionTagBuilder.Attributes["selected"] = "selected";
+                    if (item.Value != null)
+                        optionTagBuilder.MergeAttributes(_GetAttributes(item.Value));
                     stringBuilder.AppendLine(optionTagBuilder.ToString(TagRenderMode.Normal));
                 }
                 TagBuilder optgroupTagBuilder = new TagBuilder("optgroup") { InnerHtml = stringBuilder.ToString() };
@@ -604,7 +621,9 @@ namespace YuYu.Components
                 {
                     if (attributes.ContainsKey(propertyInfo.Name))
                         attributes.Remove(propertyInfo.Name);
-                    attributes.Add(propertyInfo.Name, propertyInfo.GetValue(htmlAttributes, null));
+                    object value = propertyInfo.GetValue(htmlAttributes, null);
+                    if (value != null)
+                        attributes.Add(propertyInfo.Name, value);
                 }
             return attributes;
         }
