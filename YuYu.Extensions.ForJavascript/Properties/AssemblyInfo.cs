@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // 有关程序集的常规信息通过以下
 // 特性集控制。更改这些特性值可修改
 // 与程序集关联的信息。
-[assembly: AssemblyTitle("YuYu.Extensions.ForNumberInJavascript")]
-[assembly: AssemblyDescription("JavascriptNumber扩展方法")]
+[assembly: AssemblyTitle("YuYu.Extensions.ForJavascript")]
+[assembly: AssemblyDescription("Javascript扩展方法")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("YuYu Technology Studio")]
-[assembly: AssemblyProduct("YuYu.Extensions.ForNumberInJavascript")]
+[assembly: AssemblyProduct("YuYu.Extensions.ForJavascript")]
 [assembly: AssemblyCopyright("Copyright © YuYu Technology Studio")]
 [assembly: AssemblyTrademark("YuYutech.com")]
 [assembly: AssemblyCulture("")]
