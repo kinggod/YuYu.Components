@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace YuYu.Components
@@ -22,6 +23,21 @@ namespace YuYu.Components
             for (int i = 0; i < bytes.Length - 1; i++)
                 output.Append(bytes[i].ToString(format));
             return output.ToString();
+        }
+
+        /// <summary>
+        /// MD5编码
+        /// </summary>
+        /// <param name="bytes">字节数组</param>
+        /// <param name="toUpper">全部大写</param>
+        /// <returns></returns>
+        public static string MD5Encode(this byte[] bytes, bool toUpper = false)
+        {
+            using (MD5CryptoServiceProvider md5CryptoServiceProvider = new MD5CryptoServiceProvider())
+            {
+                string encoded = BitConverter.ToString(md5CryptoServiceProvider.ComputeHash(bytes)).Replace("-", string.Empty);
+                return toUpper ? encoded.ToUpperInvariant() : encoded;
+            }
         }
     }
 }

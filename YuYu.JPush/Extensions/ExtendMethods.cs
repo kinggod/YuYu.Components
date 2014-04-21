@@ -41,43 +41,6 @@ namespace YuYu.Components
         }
 
         /// <summary>
-        /// MD5编码
-        /// </summary>
-        /// <param name="originalInput"></param>
-        /// <returns></returns>
-        public static string MD5Encode(this string originalInput)
-        {
-            return MD5Encode(Encoding.Default.GetBytes(originalInput));
-        }
-
-
-        /// <summary>
-        /// MD5编码
-        /// </summary>
-        /// <param name="bytes"></param>
-        /// <returns></returns>
-        public static string MD5Encode(this byte[] bytes)
-        {
-            using (MD5CryptoServiceProvider md5CryptoServiceProvider = new MD5CryptoServiceProvider())
-            {
-                return BitConverter.ToString(md5CryptoServiceProvider.ComputeHash(bytes)).Replace("-", string.Empty).ToUpperInvariant();
-            }
-        }
-
-        /// <summary>
-        /// Base64编码
-        /// </summary>
-        /// <param name="originalInput"></param>
-        /// <param name="encoding">默认为 Encoding.UTF8</param>
-        /// <returns></returns>
-        public static string ToBase64String(this string originalInput, Encoding encoding = null)
-        {
-            if (originalInput != null)
-                return Convert.ToBase64String((encoding ?? Encoding.UTF8).GetBytes(originalInput));
-            return string.Empty;
-        }
-
-        /// <summary>
         /// 指定的值是否包含目标平台
         /// </summary>
         /// <param name="platform"></param>

@@ -54,6 +54,9 @@
     <Reference Include="System" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Web" />
+    <Reference Include="YuYu.Extensions">
+      <HintPath>..\packages\YuYu.Extensions.4.5.0.4\lib\net45\YuYu.Extensions.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Enums\MessageType.cs" />

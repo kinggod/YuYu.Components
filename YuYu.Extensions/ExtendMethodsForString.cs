@@ -168,7 +168,7 @@ namespace YuYu.Components
         public static string GetRandom(this string input, int count)
         {
             if (input.IsNullOrEmpty())
-                throw new ArgumentNullException("input","字符串不可为空！");
+                throw new ArgumentNullException("input", "字符串不可为空！");
             if (count <= 0)
                 throw new ArgumentException("The value of parameter “count” must greater than 0!");
             StringBuilder builder = new StringBuilder(count);
@@ -542,6 +542,22 @@ namespace YuYu.Components
                 return defaultValue;
             else
                 return input;
+        }
+
+        #endregion
+
+        #region Encode
+
+        /// <summary>
+        /// MD5编码
+        /// </summary>
+        /// <param name="originalInput">原始字符串</param>
+        /// <param name="encoding">字符编码，默认为Encoding.Default</param>
+        /// <param name="toUpper">全部大写</param>
+        /// <returns></returns>
+        public static string MD5Encode(this string originalInput, Encoding encoding = null, bool toUpper = false)
+        {
+            return (encoding ?? Encoding.Default).GetBytes(originalInput).MD5Encode(toUpper);
         }
 
         #endregion

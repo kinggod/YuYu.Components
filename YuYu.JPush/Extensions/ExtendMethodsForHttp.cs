@@ -17,15 +17,15 @@ namespace YuYu.Components
     internal static class ExtendMethodsForHttp
     {
         /// <summary>
-        /// 设置 “HttpWebRequest” 的请求数据
+        /// 设置 “WebRequest” 的请求数据
         /// </summary>
-        /// <param name="httpWebRequest"></param>
+        /// <param name="webRequest"></param>
         /// <param name="parameters"></param>
         /// <param name="encoding"></param>
         /// <param name="httpMethod"></param>
-        public static void SetRequestData(this HttpWebRequest httpWebRequest, IDictionary<string, string> parameters, Encoding encoding = null, string httpMethod = "POST")
+        public static void SetData(this WebRequest webRequest, IDictionary<string, string> parameters, Encoding encoding = null, string httpMethod = "POST")
         {
-            if (httpWebRequest != null)
+            if (webRequest != null)
             {
                 encoding = encoding ?? Encoding.ASCII;
                 StringBuilder stringBuilder = new StringBuilder();
@@ -35,43 +35,25 @@ namespace YuYu.Components
                         stringBuilder.AppendFormat("&{0}={1}", key, parameters[key] ?? string.Empty);
                     }
                 byte[] data = encoding.GetBytes(stringBuilder.ToString());
-                httpWebRequest.SetRequestData(data, "application/x-www-form-urlencoded", httpMethod);
+                webRequest.SetData(data, "application/x-www-form-urlencoded", httpMethod);
             }
         }
 
         /// <summary>
-        /// 设置 “HttpWebRequest” 的请求数据
+        /// 设置 “WebRequest” 的请求数据
         /// </summary>
-        /// <param name="httpWebRequest"></param>
-        /// <param name="parameters"></param>
-        /// <param name="encoding"></param>
-        /// <param name="httpMethod"></param>
-        public static void SetRequestData(this HttpWebRequest httpWebRequest, string parameters, Encoding encoding = null, string httpMethod = "POST")
-        {
-            byte[] data = null;
-            if (!string.IsNullOrWhiteSpace(parameters))
-            {
-                encoding = encoding ?? Encoding.UTF8;
-                data = encoding.GetBytes(parameters);
-            }
-            httpWebRequest.SetRequestData(data, "text/xml; charset=utf-8", httpMethod);
-        }
-
-        /// <summary>
-        /// 设置 “HttpWebRequest” 的请求数据
-        /// </summary>
-        /// <param name="httpWebRequest"></param>
+        /// <param name="webRequest"></param>
         /// <param name="data"></param>
         /// <param name="contentType"></param>
         /// <param name="httpMethod"></param>
-        public static void SetRequestData(this HttpWebRequest httpWebRequest, byte[] data, string contentType, string httpMethod = "POST")
+        public static void SetData(this WebRequest webRequest, byte[] data, string contentType, string httpMethod = "POST")
         {
-            if (httpWebRequest != null && data != null)
+            if (webRequest != null && data != null)
             {
-                httpWebRequest.Method = httpMethod;
-                httpWebRequest.ContentType = contentType;
-                httpWebRequest.ContentLength = data.Length;
-                using (Stream stream = httpWebRequest.GetRequestStream())
+                webRequest.Method = httpMethod;
+                webRequest.ContentType = contentType;
+                webRequest.ContentLength = data.Length;
+                using (Stream stream = webRequest.GetRequestStream())
                 {
                     stream.Write(data, 0, data.Length);
                     stream.Close();
@@ -80,29 +62,12 @@ namespace YuYu.Components
         }
 
         /// <summary>
-        /// 从 “HttpWebRequest” 中读取“WebResponse”输出数据！
-        /// </summary>
-        /// <param name="httpWebRequest"></param>
-        /// <param name="encoding"></param>
-        /// <returns></returns>
-        public static string GetResponseData(this HttpWebRequest httpWebRequest, Encoding encoding = null)
-        {
-            encoding = encoding ?? Encoding.UTF8;
-            if (httpWebRequest != null)
-            {
-                WebResponse webResponse = httpWebRequest.GetResponse();
-                return webResponse.GetOutputData(encoding);
-            }
-            return string.Empty;
-        }
-
-        /// <summary>
         /// 从 “WebResponse” 中读取输出数据！
         /// </summary>
         /// <param name="webResponse"></param>
         /// <param name="encoding"></param>
         /// <returns></returns>
-        public static string GetOutputData(this WebResponse webResponse, Encoding encoding = null)
+        public static string GetData(this WebResponse webResponse, Encoding encoding = null)
         {
             encoding = encoding ?? Encoding.UTF8;
             string data = string.Empty;
@@ -128,22 +93,5 @@ namespace YuYu.Components
                 }
             return data;
         }
-
-        /// <summary>
-        /// 获取传入的 HTTP 实体主体的内容
-        /// </summary>
-        /// <param name="httpRequest"></param>
-        /// <returns></returns>
-        public static byte[] GetInputData(this HttpRequest httpRequest)
-        {
-            if (httpRequest != null)
-                using (MemoryStream memoryStream = new MemoryStream())
-                {
-                    httpRequest.InputStream.CopyTo(memoryStream);
-                    return memoryStream.ToArray();
-                }
-            return null;
-        }
-
     }
 }

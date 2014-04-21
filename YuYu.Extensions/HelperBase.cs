@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading;
 
@@ -48,6 +49,36 @@ namespace YuYu.Components
         public static object[] RegionCode(int length)
         {
             return _RegionCode(length);
+        }
+
+        /// <summary>
+        /// 通过Http Post将文件发送至指定的url
+        /// </summary>
+        /// <param name="url">目标url</param>
+        /// <param name="name">用于检索的文件域名称</param>
+        /// <param name="filename">文件全名称</param>
+        /// <param name="mime">文件的的MIME</param>
+        /// <returns>WebResponse</returns>
+        public WebResponse PostFile(string url, string name, string filename, string mime)
+        {
+            string
+                boundary = "----------" + DateTime.Now.Ticks.ToString("x"),
+                header = "--" + boundary + "\r\nContent-Disposition: form-data; name=\"" + name + "\"; filename=\"" + Path.GetFileName(filename) + "\"" + "\r\nContent-Type: " + mime + "\r\n\r\n";
+            byte[]
+                headerBytes = Encoding.UTF8.GetBytes(header),
+                boundaryBytes = Encoding.ASCII.GetBytes("\r\n--" + boundary + "\r\n"),
+                fileBytes = File.ReadAllBytes(filename);
+            WebRequest request = WebRequest.Create(url);
+            request.ContentType = "multipart/form-data; boundary=" + boundary;
+            request.ContentLength = headerBytes.Length + fileBytes.Length + boundaryBytes.Length;
+            request.Method = "POST";
+            using (Stream stream = request.GetRequestStream())
+            {
+                stream.Write(headerBytes, 0, headerBytes.Length);
+                stream.Write(fileBytes, 0, fileBytes.Length);
+                stream.Write(boundaryBytes, 0, boundaryBytes.Length);
+            }
+            return request.GetResponse();
         }
 
         /// <summary>

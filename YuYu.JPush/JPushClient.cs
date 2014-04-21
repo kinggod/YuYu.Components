@@ -80,14 +80,14 @@ namespace YuYu.Components
             WebResponse webResponse = null;
             try
             {
-                HttpWebRequest httpWebRequest = (HttpWebRequest)HttpWebRequest.Create(this.ApiBaseUrl);
-                SetCredential(httpWebRequest);
+                WebRequest webRequest = WebRequest.Create(this.ApiBaseUrl);
+                SetCredential(webRequest);
                 IDictionary<string, string> dictionary = request.GetDictionary();
                 dictionary["app_key"] = this.AppKey;
                 dictionary["verification_code"] = request.GetVerificationCode(this.MasterSecret);
-                httpWebRequest.SetRequestData(dictionary, Encoding.UTF8);
-                webResponse = httpWebRequest.GetResponse();
-                string responseContent = webResponse.GetOutputData();
+                webRequest.SetData(dictionary, Encoding.UTF8);
+                webResponse = webRequest.GetResponse();
+                string responseContent = webResponse.GetData();
                 JToken root = JToken.Parse(responseContent);
                 response.ResponseCode = (ResponseCode)root.SelectToken("errcode").Value<Int32>();
                 response.ResponseMessage = root.SelectToken("errmsg").Value<string>();
@@ -131,12 +131,12 @@ namespace YuYu.Components
                 WebResponse webResponse = null;
                 try
                 {
-                    HttpWebRequest httpWebRequest = (HttpWebRequest)HttpWebRequest.Create(REPORTBASEURLFORMAT + "?msg_ids=" + ids);
-                    httpWebRequest.Method = "GET";
-                    httpWebRequest.Headers[HttpRequestHeader.Authorization] = (this.AppKey + ":" + this.MasterSecret).ToBase64String();
-                    SetCredential(httpWebRequest);
-                    webResponse = httpWebRequest.GetResponse();
-                    string responseContent = webResponse.GetOutputData();
+                    WebRequest webRequest = (WebRequest)WebRequest.Create(REPORTBASEURLFORMAT + "?msg_ids=" + ids);
+                    webRequest.Method = "GET";
+                    webRequest.Headers[HttpRequestHeader.Authorization] = Convert.ToBase64String(Encoding.UTF8.GetBytes(this.AppKey + ":" + this.MasterSecret));
+                    SetCredential(webRequest);
+                    webResponse = webRequest.GetResponse();
+                    string responseContent = webResponse.GetData();
                     result = JsonConvert.DeserializeObject<List<Result>>(responseContent);
                 }
                 catch (Exception e)
@@ -155,11 +155,11 @@ namespace YuYu.Components
         /// <summary>
         /// 设置Credentials
         /// </summary>
-        /// <param name="httpWebRequest"></param>
-        protected void SetCredential(HttpWebRequest httpWebRequest)
+        /// <param name="webRequest"></param>
+        protected void SetCredential(WebRequest webRequest)
         {
-            if (httpWebRequest != null)
-                httpWebRequest.Credentials = new NetworkCredential(this.AppKey, this.MasterSecret);
+            if (webRequest != null)
+                webRequest.Credentials = new NetworkCredential(this.AppKey, this.MasterSecret);
         }
     }
 }

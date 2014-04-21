@@ -57,6 +57,7 @@
     <Compile Include="CompressionType.cs" />
     <Compile Include="ExtendMethodsForHttpApplication.cs" />
     <Compile Include="ExtendMethodsForHttpPostedFileBase.cs" />
+    <Compile Include="ExtendMethodsForString.cs" />
     <Compile Include="ExtendMethodsForHttpRequest.cs" />
     <Compile Include="ExtendMethodsForHttpRequestBase.cs" />
     <Compile Include="MailHelper.cs" />
