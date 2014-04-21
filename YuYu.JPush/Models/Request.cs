@@ -15,7 +15,7 @@ namespace YuYu.Components
     [KnownType(typeof(MessageType))]
     [KnownType(typeof(Platform))]
     [KnownType(typeof(ReceiverType))]
-    public class PushRequest
+    public class Request
     {
         /// <summary>
         /// 发送编号（最大支持32位正整数(即 4294967295 )）。由开发者自己维护，用于开发者自己标识一次发送请求。
@@ -111,9 +111,9 @@ namespace YuYu.Components
         /// <summary>
         /// 验证串，用于校验发送的合法性。
         /// </summary>
-        public string GetVerificationCode(string master_secret)
+        public string GetVerificationCode(string masterSecret)
         {
-            return (string.Empty + this.SendNo + (int)this.ReceiverType + this.ReceiverValue + master_secret).MD5Encode();
+            return (string.Empty + this.SendNo + (int)this.ReceiverType + this.ReceiverValue + masterSecret).MD5Encode();
         }
     }
 }

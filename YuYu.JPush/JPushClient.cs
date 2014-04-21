@@ -74,41 +74,38 @@ namespace YuYu.Components
         /// </summary>
         /// <param name="pushRequest"></param>
         /// <returns></returns>
-        public PushResponse SendPush(PushRequest pushRequest)
+        public Response Push(Request pushRequest)
         {
-            PushResponse result = new PushResponse();
+            Response pushResponse = new Response();
             WebResponse response = null;
-
             try
             {
-                var httpRequest = CreateSendPushRequest(pushRequest);
-                response = httpRequest.GetResponse();
-
-                var responseContent = response.GetOutputData();
-
+                HttpWebRequest httpWebRequest = (HttpWebRequest)HttpWebRequest.Create(this.ApiBaseUrl + "push");
+                SetCredential(httpWebRequest);
+                IDictionary<string, string> dictionary = pushRequest.GetDictionary();
+                dictionary["app_key"] = this.AppKey;
+                dictionary["verification_code"] = pushRequest.GetVerificationCode(this.MasterSecret);
+                httpWebRequest.SetRequestData(dictionary, Encoding.UTF8);
+                response = httpWebRequest.GetResponse();
+                string responseContent = response.GetOutputData();
                 JToken root = JToken.Parse(responseContent);
-
-                result.ResponseCode = (ResponseCode)root.SelectToken("errcode").Value<Int32>();
-                result.ResponseMessage = root.SelectToken("errmsg").Value<string>();
-
-                if (result.ResponseCode == ResponseCode.Succeed)
+                pushResponse.ResponseCode = (ResponseCode)root.SelectToken("errcode").Value<Int32>();
+                pushResponse.ResponseMessage = root.SelectToken("errmsg").Value<string>();
+                if (pushResponse.ResponseCode == ResponseCode.Succeed)
                 {
-                    result.MessageID = root.SelectToken("msg_id").Value<string>();
-                    result.SendIdentity = root.SelectToken("sendno").Value<string>();
+                    pushResponse.MessageID = root.SelectToken("msg_id").Value<string>();
+                    pushResponse.SendIdentity = root.SelectToken("sendno").Value<string>();
                 }
-
-                return result;
+                return pushResponse;
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                throw new InvalidOperationException("Failed to send push message.", ex);
+                throw new InvalidOperationException("Failed to send push message.", e);
             }
             finally
             {
                 if (response != null)
-                {
                     response.Close();
-                }
             }
         }
 
@@ -117,11 +114,11 @@ namespace YuYu.Components
         /// </summary>
         /// <param name="messageIDs"></param>
         /// <returns></returns>
-        public IList<PushResult> QueryPushResult(List<string> messageIDs)
+        public IList<Result> QueryResult(List<string> messageIDs)
         {
             // JPush has limitation officially. One query support no more than 100 IDs.
             int limitation = 100;
-            List<PushResult> result = new List<PushResult>();
+            List<Result> result = new List<Result>();
             string ids = string.Empty;
             if (messageIDs != null && messageIDs.Count > 0)
             {
@@ -131,13 +128,16 @@ namespace YuYu.Components
             }
             if (!string.IsNullOrWhiteSpace(ids))
             {
-                HttpWebRequest httpWebRequest = this.CreateQueryPushResultRequest(ids);
                 WebResponse response = null;
                 try
                 {
+                    HttpWebRequest httpWebRequest = (HttpWebRequest)HttpWebRequest.Create(REPORTBASEURLFORMAT + "received?msg_ids=" + ids);
+                    httpWebRequest.Method = "GET";
+                    httpWebRequest.Headers[HttpRequestHeader.Authorization] = (this.AppKey + ":" + this.MasterSecret).ToBase64String();
+                    SetCredential(httpWebRequest);
                     response = httpWebRequest.GetResponse();
                     string responseContent = response.GetOutputData();
-                    result = JsonConvert.DeserializeObject<List<PushResult>>(responseContent);
+                    result = JsonConvert.DeserializeObject<List<Result>>(responseContent);
                 }
                 catch (Exception e)
                 {
@@ -153,53 +153,6 @@ namespace YuYu.Components
         }
 
         /// <summary>
-        /// 创建发送推送的HttpWeb请求
-        /// </summary>
-        /// <param name="request"></param>
-        /// <returns></returns>
-        protected HttpWebRequest CreateSendPushRequest(PushRequest request)
-        {
-            HttpWebRequest httpWebRequest = null;
-            if (request != null)
-            {
-                httpWebRequest = (HttpWebRequest)HttpWebRequest.Create(this.ApiBaseUrl + "push");
-                SetCredential(httpWebRequest);
-                httpWebRequest.SetRequestData(GetDataDictionary(request), Encoding.UTF8);
-            }
-            return httpWebRequest;
-        }
-
-        /// <summary>
-        /// 创建检索推送结果的HttpWeb请求
-        /// </summary>
-        /// <param name="ids"></param>
-        /// <returns></returns>
-        protected HttpWebRequest CreateQueryPushResultRequest(string ids)
-        {
-            HttpWebRequest httpRequest = (HttpWebRequest)HttpWebRequest.Create(REPORTBASEURLFORMAT + "received?msg_ids=" + ids);
-            httpRequest.Method = "GET";
-            httpRequest.Headers[HttpRequestHeader.Authorization] = GetQueryToken(this.AppKey, this.MasterSecret);
-            SetCredential(httpRequest);
-            return httpRequest;
-        }
-
-        /// <summary>
-        /// 获取数据字典
-        /// </summary>
-        /// <param name="request"></param>
-        /// <returns></returns>
-        protected IDictionary<string, string> GetDataDictionary(PushRequest request)
-        {
-            if (request != null)
-            {
-                IDictionary<string, string> dictionary = request.GetDictionary();
-                dictionary["app_key"] = this.AppKey;
-                dictionary["verification_code"] = request.GetVerificationCode(this.MasterSecret);
-            }
-            return null;
-        }
-
-        /// <summary>
         /// 设置Credentials
         /// </summary>
         /// <param name="httpWebRequest"></param>
@@ -207,17 +160,6 @@ namespace YuYu.Components
         {
             if (httpWebRequest != null)
                 httpWebRequest.Credentials = new NetworkCredential(this.AppKey, this.MasterSecret);
-        }
-
-        /// <summary>
-        /// 获取QueryToken
-        /// </summary>
-        /// <param name="appKey"></param>
-        /// <param name="masterSecret"></param>
-        /// <returns></returns>
-        protected string GetQueryToken(string appKey, string masterSecret)
-        {
-            return (this.AppKey + ":" + this.MasterSecret).ToBase64String();
         }
     }
 }

@@ -17,7 +17,7 @@ namespace YuYu.Components
     /// Delegate UpdatePushResult
     /// </summary>
     /// <param name="pushResult"></param>
-    public delegate void UpdatePushResult(List<PushResult> pushResult);
+    public delegate void UpdatePushResult(List<Result> pushResult);
 
     /// <summary>
     /// Delegate ReportException

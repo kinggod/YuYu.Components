@@ -11,7 +11,7 @@ namespace YuYu.Components
     /// PushTracking
     /// </summary>
     [DataContract]
-    public class PushTracking
+    public class Tracking
     {
         /// <summary>
         /// 通知ID

@@ -28,7 +28,7 @@ namespace YuYu.Components
         /// <summary>
         /// 推送追踪列表
         /// </summary>
-        public IList<PushTracking> PushTrackings { get; protected set; }
+        public IList<Tracking> PushTrackings { get; protected set; }
 
         /// <summary>
         /// 数据锁
@@ -75,7 +75,7 @@ namespace YuYu.Components
                         DateTime nowUtcTime = DateTime.UtcNow;
                         for (int i = 0; i < this.PushTrackings.Count; )
                         {
-                            PushTracking pushTracking = this.PushTrackings[i];
+                            Tracking pushTracking = this.PushTrackings[i];
                             if ((nowUtcTime - pushTracking.UtcTimestamp).TotalMinutes > PUSHTRACKINGLIFETIME)
                                 this.PushTrackings.RemoveAt(i);
                             else
@@ -85,12 +85,12 @@ namespace YuYu.Components
                             }
                         }
                     }
-                    List<PushResult> results = new List<PushResult>();
+                    List<Result> results = new List<Result>();
                     while (ids.Count > 0)
                     {
                         List<string> listToOperate = new List<string>();
                         listToOperate.AddRange(ids.Take(ids.Count > 100 ? 100 : ids.Count));
-                        IList<PushResult> queryResult = JPushClient.QueryPushResult(listToOperate);
+                        IList<Result> queryResult = JPushClient.QueryResult(listToOperate);
                         if (queryResult != null)
                             results.AddRange(queryResult);
                         ids.RemoveRange(0, listToOperate.Count);
@@ -141,7 +141,7 @@ namespace YuYu.Components
             if (threadInterval < 1)
                 threadInterval = 60;
             this.ThreadInterval = threadInterval;
-            this.PushTrackings = new List<PushTracking>();
+            this.PushTrackings = new List<Tracking>();
             this.DataLocker = new object();
             this.PushResultUpdate = pushResultUpdate;
             this.PushTrackingInitialize = pushTrackingInitialize;
@@ -154,13 +154,13 @@ namespace YuYu.Components
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public PushResponse SendPush(PushRequest request)
+        public Response Push(Request request)
         {
             try
             {
-                PushResponse response = JPushClient.SendPush(request);
+                Response response = JPushClient.Push(request);
                 if (response != null && !string.IsNullOrWhiteSpace(response.MessageID))
-                    this.AddMessageTrackingID(new PushTracking
+                    this.AddMessageTrackingID(new Tracking
                     {
                         MessageID = response.MessageID,
                         UtcTimestamp = DateTime.UtcNow
@@ -178,7 +178,7 @@ namespace YuYu.Components
         /// Adds the message tracking identifier.
         /// </summary>
         /// <param name="messageTracking">The message tracking.</param>
-        public void AddMessageTrackingID(PushTracking messageTracking)
+        public void AddMessageTrackingID(Tracking messageTracking)
         {
             lock (DataLocker)
             {
@@ -208,7 +208,7 @@ namespace YuYu.Components
                 IList<string> result = new List<string>();
                 lock (DataLocker)
                 {
-                    foreach (PushTracking pushTracking in this.PushTrackings)
+                    foreach (Tracking pushTracking in this.PushTrackings)
                         result.Add(pushTracking.MessageID);
                 }
                 return result;
@@ -231,11 +231,11 @@ namespace YuYu.Components
         /// <param name="messageID"></param>
         /// <param name="index"></param>
         /// <returns></returns>
-        protected PushTracking FindPushTrackingByMessageIDWithoutLocker(string messageID, out int index)
+        protected Tracking FindPushTrackingByMessageIDWithoutLocker(string messageID, out int index)
         {
             index = -1;
             if (!string.IsNullOrWhiteSpace(messageID))
-                foreach (PushTracking temp in this.PushTrackings)
+                foreach (Tracking temp in this.PushTrackings)
                 {
                     index++;
                     if (temp.MessageID == messageID)
@@ -248,7 +248,7 @@ namespace YuYu.Components
         /// Adds the message tracking identifier without locker.
         /// </summary>
         /// <param name="pushTracking"></param>
-        protected void AddPushTrackingByWithoutLocker(PushTracking pushTracking)
+        protected void AddPushTrackingByWithoutLocker(Tracking pushTracking)
         {
             if (pushTracking != null && !string.IsNullOrWhiteSpace(pushTracking.MessageID))
             {
@@ -267,7 +267,7 @@ namespace YuYu.Components
             if (!string.IsNullOrWhiteSpace(messageID))
             {
                 int index = 0;
-                PushTracking pushTracking = FindPushTrackingByMessageIDWithoutLocker(messageID, out index);
+                Tracking pushTracking = FindPushTrackingByMessageIDWithoutLocker(messageID, out index);
                 if (pushTracking != null && index >= 0)
                     this.PushTrackings.RemoveAt(index);
             }

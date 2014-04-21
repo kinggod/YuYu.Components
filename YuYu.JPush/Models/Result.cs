@@ -11,7 +11,7 @@ namespace YuYu.Components
     /// Class PushMessageStatus.
     /// </summary>
     [DataContract]
-    public class PushResult
+    public class Result
     {
         /// <summary>
         /// Gets or sets the message unique identifier.

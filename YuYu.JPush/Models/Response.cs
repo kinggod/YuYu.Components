@@ -12,7 +12,7 @@ namespace YuYu.Components
     /// </summary>
     [DataContract]
     [KnownType(typeof(ResponseCode))]
-    public class PushResponse
+    public class Response
     {
         /// <summary>
         /// Gets or sets the send identity.

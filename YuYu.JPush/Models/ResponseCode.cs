@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace YuYu.Components
 {
     /// <summary>
-    /// ResponseCode
+    /// PushResponseCode
     /// </summary>
     [DataContract]
     public enum ResponseCode

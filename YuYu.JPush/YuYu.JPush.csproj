@@ -65,10 +65,10 @@
     <Compile Include="JPushHandler.cs" />
     <Compile Include="JPushClient.cs" />
     <Compile Include="Models\Message.cs" />
-    <Compile Include="Models\PushTracking.cs" />
-    <Compile Include="Models\PushRequest.cs" />
-    <Compile Include="Models\PushResult.cs" />
-    <Compile Include="Models\PushResponse.cs" />
+    <Compile Include="Models\Tracking.cs" />
+    <Compile Include="Models\Request.cs" />
+    <Compile Include="Models\Result.cs" />
+    <Compile Include="Models\Response.cs" />
     <Compile Include="Models\ResponseCode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
