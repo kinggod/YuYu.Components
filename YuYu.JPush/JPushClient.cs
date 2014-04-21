@@ -17,12 +17,12 @@ namespace YuYu.Components
         /// <summary>
         /// The remote base URL format
         /// </summary>
-        public const string APIBASEURLFORMAT = "{0}api.jpush.cn:{1}/v2/";
+        public const string APIBASEURLFORMAT = "{0}api.jpush.cn:{1}/v2/push";
 
         /// <summary>
         /// The report base URL format
         /// </summary>
-        public const string REPORTBASEURLFORMAT = "https://report.jpush.cn/v2/";
+        public const string REPORTBASEURLFORMAT = "https://report.jpush.cn/v2/received";
 
         /// <summary>
         /// 协议
@@ -66,7 +66,7 @@ namespace YuYu.Components
             this.AppKey = appKey;
             this.MasterSecret = masterSecret;
             this.Protocol = useSSL ? "https://" : "http://";
-            this.Port = useSSL ? 443 : 80;
+            this.Port = useSSL ? 443 : 8800;
         }
 
         /// <summary>
@@ -80,7 +80,7 @@ namespace YuYu.Components
             WebResponse response = null;
             try
             {
-                HttpWebRequest httpWebRequest = (HttpWebRequest)HttpWebRequest.Create(this.ApiBaseUrl + "push");
+                HttpWebRequest httpWebRequest = (HttpWebRequest)HttpWebRequest.Create(this.ApiBaseUrl);
                 SetCredential(httpWebRequest);
                 IDictionary<string, string> dictionary = pushRequest.GetDictionary();
                 dictionary["app_key"] = this.AppKey;
@@ -131,7 +131,7 @@ namespace YuYu.Components
                 WebResponse response = null;
                 try
                 {
-                    HttpWebRequest httpWebRequest = (HttpWebRequest)HttpWebRequest.Create(REPORTBASEURLFORMAT + "received?msg_ids=" + ids);
+                    HttpWebRequest httpWebRequest = (HttpWebRequest)HttpWebRequest.Create(REPORTBASEURLFORMAT + "?msg_ids=" + ids);
                     httpWebRequest.Method = "GET";
                     httpWebRequest.Headers[HttpRequestHeader.Authorization] = (this.AppKey + ":" + this.MasterSecret).ToBase64String();
                     SetCredential(httpWebRequest);
