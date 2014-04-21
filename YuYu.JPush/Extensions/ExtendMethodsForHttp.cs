@@ -12,9 +12,9 @@ using System.Web;
 namespace YuYu.Components
 {
     /// <summary>
-    /// ExtendMethodsForHttpWebRequest
+    /// ExtendMethodsForHttp
     /// </summary>
-    internal static class ExtendMethodsForHttpWebRequest
+    internal static class ExtendMethodsForHttp
     {
         /// <summary>
         /// 设置 “HttpWebRequest” 的请求数据
@@ -78,5 +78,72 @@ namespace YuYu.Components
                 }
             }
         }
+
+        /// <summary>
+        /// 从 “HttpWebRequest” 中读取“WebResponse”输出数据！
+        /// </summary>
+        /// <param name="httpWebRequest"></param>
+        /// <param name="encoding"></param>
+        /// <returns></returns>
+        public static string GetResponseData(this HttpWebRequest httpWebRequest, Encoding encoding = null)
+        {
+            encoding = encoding ?? Encoding.UTF8;
+            if (httpWebRequest != null)
+            {
+                WebResponse webResponse = httpWebRequest.GetResponse();
+                return webResponse.GetOutputData(encoding);
+            }
+            return string.Empty;
+        }
+
+        /// <summary>
+        /// 从 “WebResponse” 中读取输出数据！
+        /// </summary>
+        /// <param name="webResponse"></param>
+        /// <param name="encoding"></param>
+        /// <returns></returns>
+        public static string GetOutputData(this WebResponse webResponse, Encoding encoding = null)
+        {
+            encoding = encoding ?? Encoding.UTF8;
+            string data = string.Empty;
+            if (webResponse != null)
+                try
+                {
+                    using (Stream stream = webResponse.GetResponseStream())
+                    {
+                        StreamReader streamReader = new StreamReader(stream, encoding);
+                        data = streamReader.ReadToEnd();
+                        streamReader.Close();
+                        streamReader.Dispose();
+                        stream.Close();
+                    }
+                }
+                catch (Exception e)
+                {
+                    throw new Exception("从 “WebResponse” 中读取输出数据失败！", e);
+                }
+                finally
+                {
+                    webResponse.Close();
+                }
+            return data;
+        }
+
+        /// <summary>
+        /// 获取传入的 HTTP 实体主体的内容
+        /// </summary>
+        /// <param name="httpRequest"></param>
+        /// <returns></returns>
+        public static byte[] GetInputData(this HttpRequest httpRequest)
+        {
+            if (httpRequest != null)
+                using (MemoryStream memoryStream = new MemoryStream())
+                {
+                    httpRequest.InputStream.CopyTo(memoryStream);
+                    return memoryStream.ToArray();
+                }
+            return null;
+        }
+
     }
 }

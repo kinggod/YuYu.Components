@@ -31,72 +31,6 @@ namespace YuYu.Components
         }
 
         /// <summary>
-        /// 从 “HttpWebRequest” 中读取“WebResponse”输出数据！
-        /// </summary>
-        /// <param name="httpWebRequest"></param>
-        /// <param name="encoding"></param>
-        /// <returns></returns>
-        public static string GetResponseData(this HttpWebRequest httpWebRequest, Encoding encoding = null)
-        {
-            encoding = encoding ?? Encoding.UTF8;
-            if (httpWebRequest != null)
-            {
-                WebResponse webResponse = httpWebRequest.GetResponse();
-                return webResponse.GetOutputData(encoding);
-            }
-            return string.Empty;
-        }
-
-        /// <summary>
-        /// 从 “WebResponse” 中读取输出数据！
-        /// </summary>
-        /// <param name="webResponse"></param>
-        /// <param name="encoding"></param>
-        /// <returns></returns>
-        public static string GetOutputData(this WebResponse webResponse, Encoding encoding = null)
-        {
-            encoding = encoding ?? Encoding.UTF8;
-            string data = string.Empty;
-            if (webResponse != null)
-                try
-                {
-                    using (Stream stream = webResponse.GetResponseStream())
-                    {
-                        StreamReader streamReader = new StreamReader(stream, encoding);
-                        data = streamReader.ReadToEnd();
-                        streamReader.Close();
-                        streamReader.Dispose();
-                        stream.Close();
-                    }
-                }
-                catch (Exception e)
-                {
-                    throw new Exception("从 “WebResponse” 中读取输出数据失败！", e);
-                }
-                finally
-                {
-                    webResponse.Close();
-                }
-            return data;
-        }
-
-        /// <summary>
-        /// 获取传入的 HTTP 实体主体的内容
-        /// </summary>
-        /// <param name="httpRequest"></param>
-        /// <returns></returns>
-        public static byte[] GetInputData(this HttpRequest httpRequest)
-        {
-            if (httpRequest != null)
-                using (MemoryStream memoryStream = new MemoryStream())
-                {
-                    httpRequest.InputStream.CopyTo(memoryStream);
-                    return memoryStream.ToArray();
-                }
-            return null;
-        }
-
-        /// <summary>
         /// URL编码
         /// </summary>
         /// <param name="originalInput"></param>
@@ -113,7 +47,7 @@ namespace YuYu.Components
         /// <returns></returns>
         public static string MD5Encode(this string originalInput)
         {
-            return MD5Encode(Encoding.Default.GetBytes(originalInput)).ToUpperInvariant();
+            return MD5Encode(Encoding.Default.GetBytes(originalInput));
         }
 
 
@@ -131,20 +65,6 @@ namespace YuYu.Components
         }
 
         /// <summary>
-        /// Checks the null reference.
-        /// </summary>
-        /// <param name="anyObject">Any object.</param>
-        /// <param name="objectIdentity">The object identity.</param>
-        /// <exception cref="System.NullReferenceException">Object [ + objectIdentity.GetStringValue() + ] is null.</exception>
-        public static void CheckNullReference(this object anyObject, string objectIdentity = null)
-        {
-            if (anyObject == null)
-            {
-                throw new NullReferenceException("Object [" + (objectIdentity ?? string.Empty) + "] is null.");
-            }
-        }
-
-        /// <summary>
         /// Base64编码
         /// </summary>
         /// <param name="originalInput"></param>
@@ -158,7 +78,7 @@ namespace YuYu.Components
         }
 
         /// <summary>
-        /// 
+        /// 指定的值是否包含目标平台
         /// </summary>
         /// <param name="platform"></param>
         /// <param name="other"></param>

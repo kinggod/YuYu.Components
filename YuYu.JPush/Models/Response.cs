@@ -19,7 +19,7 @@ namespace YuYu.Components
         /// </summary>
         /// <value>The send identity.</value>
         [DataMember]
-        public string SendIdentity { get; set; }
+        public string SendNo { get; set; }
 
         /// <summary>
         /// Gets or sets the message unique identifier.

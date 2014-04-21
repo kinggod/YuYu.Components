@@ -61,7 +61,7 @@
     <Compile Include="Enums\ReceiverType.cs" />
     <Compile Include="Extensions\Delegates.cs" />
     <Compile Include="Extensions\ExtendMethods.cs" />
-    <Compile Include="Extensions\ExtendMethodsForHttpWebRequest.cs" />
+    <Compile Include="Extensions\ExtendMethodsForHttp.cs" />
     <Compile Include="JPushHandler.cs" />
     <Compile Include="JPushClient.cs" />
     <Compile Include="Models\Message.cs" />

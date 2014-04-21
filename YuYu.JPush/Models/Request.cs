@@ -21,13 +21,7 @@ namespace YuYu.Components
         /// 发送编号（最大支持32位正整数(即 4294967295 )）。由开发者自己维护，用于开发者自己标识一次发送请求。
         /// </summary>
         [DataMember]
-        public int SendNo
-        {
-            get
-            {
-                return (int)(((DateTime.UtcNow - new DateTime(2014, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds) % Int32.MaxValue);
-            }
-        }
+        public int SendNo { get; private set; }
 
         /// <summary>
         /// 接收者类型
@@ -87,13 +81,21 @@ namespace YuYu.Components
         public bool IsTest { get; set; }
 
         /// <summary>
+        /// 构造函数
+        /// </summary>
+        public Request(int sendNo)
+        {
+            this.SendNo = sendNo;
+        }
+
+        /// <summary>
         /// 获取推送请求参数字典
         /// </summary>
         /// <returns></returns>
         public IDictionary<string, string> GetDictionary()
         {
             IDictionary<string, string> dictionary = new Dictionary<string, string>();
-            dictionary.Add("sendno", ((int)this.SendNo).ToString());
+            dictionary.Add("sendno", this.SendNo.ToString());
             dictionary.Add("receiver_type", ((int)this.ReceiverType).ToString());
             dictionary.Add("receiver_value", (this.ReceiverValue ?? string.Empty).UrlEncode());
             dictionary.Add("msg_type", ((int)this.MessageType).ToString());
@@ -113,7 +115,7 @@ namespace YuYu.Components
         /// </summary>
         public string GetVerificationCode(string masterSecret)
         {
-            return (string.Empty + this.SendNo + (int)this.ReceiverType + this.ReceiverValue + masterSecret).MD5Encode();
+            return (this.SendNo.ToString() + ((int)this.ReceiverType).ToString() + (this.ReceiverValue ?? string.Empty) + masterSecret).MD5Encode();
         }
     }
 }

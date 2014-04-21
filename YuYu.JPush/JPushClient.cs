@@ -72,31 +72,31 @@ namespace YuYu.Components
         /// <summary>
         /// 发送推送
         /// </summary>
-        /// <param name="pushRequest"></param>
+        /// <param name="request"></param>
         /// <returns></returns>
-        public Response Push(Request pushRequest)
+        public Response Push(Request request)
         {
-            Response pushResponse = new Response();
-            WebResponse response = null;
+            Response response = new Response();
+            WebResponse webResponse = null;
             try
             {
                 HttpWebRequest httpWebRequest = (HttpWebRequest)HttpWebRequest.Create(this.ApiBaseUrl);
                 SetCredential(httpWebRequest);
-                IDictionary<string, string> dictionary = pushRequest.GetDictionary();
+                IDictionary<string, string> dictionary = request.GetDictionary();
                 dictionary["app_key"] = this.AppKey;
-                dictionary["verification_code"] = pushRequest.GetVerificationCode(this.MasterSecret);
+                dictionary["verification_code"] = request.GetVerificationCode(this.MasterSecret);
                 httpWebRequest.SetRequestData(dictionary, Encoding.UTF8);
-                response = httpWebRequest.GetResponse();
-                string responseContent = response.GetOutputData();
+                webResponse = httpWebRequest.GetResponse();
+                string responseContent = webResponse.GetOutputData();
                 JToken root = JToken.Parse(responseContent);
-                pushResponse.ResponseCode = (ResponseCode)root.SelectToken("errcode").Value<Int32>();
-                pushResponse.ResponseMessage = root.SelectToken("errmsg").Value<string>();
-                if (pushResponse.ResponseCode == ResponseCode.Succeed)
+                response.ResponseCode = (ResponseCode)root.SelectToken("errcode").Value<Int32>();
+                response.ResponseMessage = root.SelectToken("errmsg").Value<string>();
+                if (response.ResponseCode == ResponseCode.Succeed)
                 {
-                    pushResponse.MessageID = root.SelectToken("msg_id").Value<string>();
-                    pushResponse.SendIdentity = root.SelectToken("sendno").Value<string>();
+                    response.MessageID = root.SelectToken("msg_id").Value<string>();
+                    response.SendNo = root.SelectToken("sendno").Value<string>();
                 }
-                return pushResponse;
+                return response;
             }
             catch (Exception e)
             {
@@ -104,8 +104,8 @@ namespace YuYu.Components
             }
             finally
             {
-                if (response != null)
-                    response.Close();
+                if (webResponse != null)
+                    webResponse.Close();
             }
         }
 
@@ -128,15 +128,15 @@ namespace YuYu.Components
             }
             if (!string.IsNullOrWhiteSpace(ids))
             {
-                WebResponse response = null;
+                WebResponse webResponse = null;
                 try
                 {
                     HttpWebRequest httpWebRequest = (HttpWebRequest)HttpWebRequest.Create(REPORTBASEURLFORMAT + "?msg_ids=" + ids);
                     httpWebRequest.Method = "GET";
                     httpWebRequest.Headers[HttpRequestHeader.Authorization] = (this.AppKey + ":" + this.MasterSecret).ToBase64String();
                     SetCredential(httpWebRequest);
-                    response = httpWebRequest.GetResponse();
-                    string responseContent = response.GetOutputData();
+                    webResponse = httpWebRequest.GetResponse();
+                    string responseContent = webResponse.GetOutputData();
                     result = JsonConvert.DeserializeObject<List<Result>>(responseContent);
                 }
                 catch (Exception e)
@@ -145,8 +145,8 @@ namespace YuYu.Components
                 }
                 finally
                 {
-                    if (response != null)
-                        response.Close();
+                    if (webResponse != null)
+                        webResponse.Close();
                 }
             }
             return result;
