@@ -14,18 +14,18 @@ namespace YuYu.Components
     public class YuYuWebApiConfigurationSectionGroup : ConfigurationSectionGroup
     {
         /// <summary>
-        /// webApi配置节
+        /// HttpConfiguration配置节KEY
         /// </summary>
-        public const string WebApisSectionKey = "httpConfiguration";
+        public const string HttpConfigurationSectionKey = "httpConfiguration";
 
         /// <summary>
-        /// WebApi集合
+        /// HttpConfiguration配置节
         /// </summary>
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        [ConfigurationProperty(WebApisSectionKey)]
-        public virtual YuYuWebApiHttpConfigurationConfigurationSection WebApisSection
+        [ConfigurationProperty(HttpConfigurationSectionKey)]
+        public virtual YuYuWebApiHttpConfigurationConfigurationSection HttpConfiguration
         {
-            get { return (YuYuWebApiHttpConfigurationConfigurationSection)this.Sections[WebApisSectionKey]; }
+            get { return (YuYuWebApiHttpConfigurationConfigurationSection)this.Sections[HttpConfigurationSectionKey]; }
         }
     }
 }

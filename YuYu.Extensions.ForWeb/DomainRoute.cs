@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
-using System.Web.Mvc;
 using System.Web.Routing;
 
 namespace YuYu.Components
@@ -129,7 +128,7 @@ namespace YuYu.Components
             return new DomainData
             {
                 Protocol = string.IsNullOrWhiteSpace(this.Protocol) ? requestContext.HttpContext.Request.Url.Scheme : this.Protocol,
-                HostName = hostname,
+                Host = hostname,
                 Port = this.Port > 0 ? requestContext.HttpContext.Request.Url.Port : this.Port,
             };
         }

@@ -11,12 +11,12 @@ namespace YuYu.Components
     /// <summary>
     /// 
     /// </summary>
-    public class YuYuWebApiConfigurationManager
+    public class YuYuWebApiConfigurationManager : YuYuWebConfigurationManager
     {
         /// <summary>
         /// 配置节名称
         /// </summary>
-        public const string SectionGroupName = "yuyu.webApi";
+        public const string WebApiSectionGroupName = "webApi";
 
         /// <summary>
         /// 注册WebApi
@@ -24,30 +24,21 @@ namespace YuYu.Components
         /// <param name="config"></param>
         public static void RegisterWebApis(HttpConfiguration config)
         {
-            _RegisterWebApis(config);
-        }
-
-        /// <summary>
-        /// YuYu.WebApi配置节组
-        /// </summary>
-        public static YuYuWebApiConfigurationSectionGroup YuYuWebApiConfigurationSectionGroup = (YuYuWebApiConfigurationSectionGroup)WebConfigurationManager.OpenWebConfiguration("~/web.config").GetSectionGroup(SectionGroupName);
-
-        #region
-
-        private static void _RegisterWebApis(HttpConfiguration config)
-        {
-            foreach (var webApi in YuYuWebApiConfigurationSectionGroup.WebApisSection.WebApis.WebApiElements)
+            foreach (WebApiRouteElement route in YuYuWebApiConfigurationSectionGroup.HttpConfiguration.Routes.RouteElements)
             {
                 config.Routes.MapHttpRoute(
-                    name: webApi.Name,
-                    routeTemplate: webApi.RouteTemplate,
-                    defaults: webApi.Defaults.CreateObject(),
-                    constraints: webApi.Constraints.CreateObject(),
-                    handler: webApi.CreateHandlerInstance()
+                    name: route.Name,
+                    routeTemplate: route.RouteTemplate,
+                    defaults: route.Defaults.CreateObject(),
+                    constraints: route.Constraints.CreateObject(),
+                    handler: route.Handler
                 );
             }
         }
 
-        #endregion
+        /// <summary>
+        /// WebApi配置节组
+        /// </summary>
+        public static YuYuWebApiConfigurationSectionGroup YuYuWebApiConfigurationSectionGroup = (YuYuWebApiConfigurationSectionGroup)YuYuWebConfigurationSectionGroup.SectionGroups[WebApiSectionGroupName];
     }
 }

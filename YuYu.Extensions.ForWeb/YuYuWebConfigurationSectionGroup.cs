@@ -12,5 +12,19 @@ namespace YuYu.Components
     /// </summary>
     public class YuYuWebConfigurationSectionGroup : ConfigurationSectionGroup
     {
+        /// <summary>
+        /// 路由配置节
+        /// </summary>
+        public const string RoutesSectionKey = "routeCollection";
+
+        /// <summary>
+        /// 路由配置节
+        /// </summary>
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        [ConfigurationProperty(RoutesSectionKey, IsRequired = true)]
+        public virtual YuYuRouteCollectionConfigurationSection RoutesSection
+        {
+            get { return (YuYuRouteCollectionConfigurationSection)this.Sections[RoutesSectionKey]; }
+        }
     }
 }

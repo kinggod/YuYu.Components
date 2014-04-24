@@ -33,7 +33,7 @@ namespace YuYu.Components
             string folderName = string.Empty;
             if (!string.IsNullOrWhiteSpace(directoryParameterName))
                 folderName = DateTime.Now.GetDirectoryName(cycleMode);
-            foreach (var route in _Section.Routes.RouteElements)
+            foreach (MvcRouteElement route in YuYuMvcStaticizeRouteCollectionConfigurationSection.Routes.RouteElements)
             {
                 RouteValueDictionary defaults = Helper.CreateRouteValueDictionary(route.Defaults.CreateObject());
                 RouteValueDictionary constraints = Helper.CreateRouteValueDictionary(route.Constraints.CreateObject());
@@ -41,7 +41,7 @@ namespace YuYu.Components
                     defaults.Add(directoryParameterName, folderName);
                 Route item = null;
                 if (!string.IsNullOrWhiteSpace(route.Domain))
-                    item = new DomainRoute(route.Domain, route.Url, route.CreateRouteHandlerInstance())
+                    item = new DomainRoute(route.Domain, route.Url, route.RouteHandler)
                     {
                         Defaults = defaults,
                         Constraints = constraints,
@@ -50,7 +50,7 @@ namespace YuYu.Components
                         Protocol = route.Protocol,
                     };
                 else
-                    item = new Route(route.Url, route.CreateRouteHandlerInstance())
+                    item = new Route(route.Url, route.RouteHandler)
                     {
                         Defaults = defaults,
                         Constraints = constraints,
@@ -62,24 +62,9 @@ namespace YuYu.Components
             }
         }
 
-        #region
-
-        private static YuYuMvcStaticizeRouteCollectionConfigurationSection _Section = (YuYuMvcStaticizeRouteCollectionConfigurationSection)YuYuMvcConfigurationSectionGroup.Sections[SectionName];
-
-        private static string _WeekOfYear(DateTime dt)
-        {
-            DateTime firstDayOfYear = new DateTime(dt.Year, 1, 1);
-            int skipWeek = firstDayOfYear.DayOfWeek > 0 ? 1 : 0;
-            int days = dt.DayOfYear - (firstDayOfYear.DayOfWeek > 0 ? 7 - (int)firstDayOfYear.DayOfWeek : 0);
-            int weekOfYear = days / 7 + 1;
-            if (days % 7 > 0)
-                weekOfYear += 1;
-            if (weekOfYear > 9)
-                return weekOfYear.ToString();
-            else
-                return "0" + weekOfYear;
-        }
-
-        #endregion
+        /// <summary>
+        /// 
+        /// </summary>
+        public static YuYuMvcStaticizeRouteCollectionConfigurationSection YuYuMvcStaticizeRouteCollectionConfigurationSection = (YuYuMvcStaticizeRouteCollectionConfigurationSection)YuYuMvcConfigurationSectionGroup.Sections[SectionName];
     }
 }

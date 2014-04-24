@@ -10,7 +10,7 @@ namespace YuYu.Components
     /// <summary>
     /// 捆绑配置节
     /// </summary>
-    public class BundleElement : ConfigurationElement
+    public class WebOptimizationBundleElement : ConfigurationElement
     {
         /// <summary>
         /// 类型键
@@ -59,9 +59,9 @@ namespace YuYu.Components
         /// </summary>
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         [ConfigurationProperty(FilesKey)]
-        public FileCollection Files
+        public WebOptimizationFileCollection Files
         {
-            get { return (FileCollection)this[FilesKey]; }
+            get { return (WebOptimizationFileCollection)this[FilesKey]; }
             set { this[FilesKey] = value; }
         }
 
@@ -70,9 +70,9 @@ namespace YuYu.Components
         /// </summary>
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         [ConfigurationProperty(DirectoriesKey)]
-        public DirectoryCollection Directories
+        public WebOptimizationDirectoryCollection Directories
         {
-            get { return (DirectoryCollection)this[DirectoriesKey]; }
+            get { return (WebOptimizationDirectoryCollection)this[DirectoriesKey]; }
             set { this[DirectoriesKey] = value; }
         }
     }

@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Web.Routing;
 using System.Web.Mvc;
+using System.Web.Routing;
 
 namespace YuYu.Components
 {
@@ -192,7 +192,7 @@ namespace YuYu.Components
         /// <returns></returns>
         public static Route MapDomainRoute(this System.Web.Routing.RouteCollection routes, string name, string protocol, string domain, string url, object defaults, object constraints, string[] namespaces)
         {
-            return routes.MapDomainRoute(name, protocol, domain, 0, url, defaults, constraints, namespaces);
+            return routes.MapDomainRoute(name, protocol, domain, 80, url, defaults, constraints, namespaces);
         }
 
         /// <summary>
@@ -218,13 +218,13 @@ namespace YuYu.Components
                 throw new ArgumentNullException("url");
             Route route = new DomainRoute(domain, url, new MvcRouteHandler())
             {
-                Defaults = Helper.CreateRouteValueDictionary(defaults),
-                Constraints = Helper.CreateRouteValueDictionary(constraints),
+                Defaults = RouteValueDictionaryHelper.CreateRouteValueDictionary(defaults),
+                Constraints = RouteValueDictionaryHelper.CreateRouteValueDictionary(constraints),
                 DataTokens = new RouteValueDictionary(),
                 Protocol = protocol,
                 Port = port,
             };
-            if (namespaces != null && namespaces.Length > 0)
+            if (namespaces.IsNotNullOrEmpty())
                 route.DataTokens["Namespaces"] = namespaces;
             routes.Add(name, route);
             return route;

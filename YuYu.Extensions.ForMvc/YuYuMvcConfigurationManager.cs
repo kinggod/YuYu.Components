@@ -13,28 +13,35 @@ namespace YuYu.Components
     /// <summary>
     /// 
     /// </summary>
-    public class YuYuMvcConfigurationManager
+    public class YuYuMvcConfigurationManager : YuYuWebConfigurationManager
     {
         /// <summary>
         /// 配置节名称
         /// </summary>
-        public const string SectionGroupName = "yuyu.mvc";
+        public const string MvcSectionGroupName = "mvc";
 
         /// <summary>
         /// 注册路由
         /// </summary>
-        /// <param name="routes"></param>
-        public static void RegisterRoutes(System.Web.Routing.RouteCollection routes)
+        /// <param name="routes">RouteCollection</param>
+        public static void RegisterRoutes(RouteCollection routes)
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
-            foreach (var route in YuYuMvcConfigurationSectionGroup.RoutesSection.Routes.RouteElements)
+            foreach (MvcRouteElement route in YuYuMvcConfigurationSectionGroup.RoutesSection.Routes.RouteElements)
             {
-                RouteValueDictionary defaults = Helper.CreateRouteValueDictionary(route.Defaults.CreateObject());
-                RouteValueDictionary constraints = Helper.CreateRouteValueDictionary(route.Constraints.CreateObject());
+                RouteValueDictionary defaults = RouteValueDictionaryHelper.CreateRouteValueDictionary(route.Defaults.CreateObject());
+                RouteValueDictionary constraints = RouteValueDictionaryHelper.CreateRouteValueDictionary(route.Constraints.CreateObject());
                 Route item = null;
-                if (!string.IsNullOrWhiteSpace(route.Domain))
-                    item = new DomainRoute(route.Domain, route.Url, route.CreateRouteHandlerInstance())
+                if (route.Domain.IsNullOrWhiteSpace())
+                    item = new Route(route.Url, route.RouteHandler)
+                    {
+                        Defaults = defaults,
+                        Constraints = constraints,
+                        DataTokens = new RouteValueDictionary()
+                    };
+                else
+                    item = new DomainRoute(route.Domain, route.Url, route.RouteHandler)
                     {
                         Defaults = defaults,
                         Constraints = constraints,
@@ -42,14 +49,7 @@ namespace YuYu.Components
                         Port = route.Port,
                         Protocol = route.Protocol,
                     };
-                else
-                    item = new Route(route.Url, route.CreateRouteHandlerInstance())
-                    {
-                        Defaults = defaults,
-                        Constraints = constraints,
-                        DataTokens = new RouteValueDictionary()
-                    };
-                if (!string.IsNullOrWhiteSpace(route.Namespaces))
+                if (route.Namespaces.IsNotNullOrWhiteSpace())
                     item.DataTokens["Namespaces"] = route.Namespaces.Split(',');
                 routes.Add(route.Name, item);
             }
@@ -58,18 +58,18 @@ namespace YuYu.Components
         /// <summary>
         /// 注册过滤器
         /// </summary>
-        /// <param name="filters"></param>
+        /// <param name="filters">GlobalFilterCollection</param>
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
-            foreach (var filter in YuYuMvcConfigurationSectionGroup.FiltersSection.Filters.FilterElements)
+            foreach (MvcGlobalFilterElement filter in YuYuMvcConfigurationSectionGroup.FiltersSection.GlobalFilters.GlobalFilterElements)
             {
                 filters.Add(filter.CreateFilterInstance(), filter.Order);
             }
         }
 
         /// <summary>
-        /// YuYu.Mvc配置节组
+        /// Mvc配置节组
         /// </summary>
-        public static YuYuMvcConfigurationSectionGroup YuYuMvcConfigurationSectionGroup = (YuYuMvcConfigurationSectionGroup)WebConfigurationManager.OpenWebConfiguration("~/web.config").GetSectionGroup(SectionGroupName);
+        public static YuYuMvcConfigurationSectionGroup YuYuMvcConfigurationSectionGroup = (YuYuMvcConfigurationSectionGroup)YuYuWebConfigurationSectionGroup.SectionGroups[MvcSectionGroupName];
     }
 }

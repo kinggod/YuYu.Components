@@ -23,9 +23,9 @@ namespace YuYu.Components
         /// </summary>
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         [ConfigurationProperty(RoutesKey)]
-        public virtual RouteCollection Routes
+        public virtual MvcRouteCollection Routes
         {
-            get { return (RouteCollection)this[RoutesKey]; }
+            get { return (MvcRouteCollection)this[RoutesKey]; }
             set { this[RoutesKey] = value; }
         }
 

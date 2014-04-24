@@ -10,7 +10,7 @@ namespace YuYu.Components
     /// <summary>
     /// 
     /// </summary>
-    public class DirectoryElement : ConfigurationElement
+    public class WebOptimizationDirectoryElement : ConfigurationElement
     {
         /// <summary>
         /// 虚拟路径键

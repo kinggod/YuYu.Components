@@ -7,25 +7,25 @@ using System.Text;
 namespace YuYu.Components
 {
     /// <summary>
-    /// 
+    /// 过滤器集合类
     /// </summary>
-    public class DirectoryCollection : ConfigurationElementCollection
+    public class MvcGlobalFilterCollection : ConfigurationElementCollection
     {
         /// <summary>
         /// 元素名称
         /// </summary>
-        public const string DirectoryKey = "directory";
+        public const string FilterKey = "globalFilter";
 
         /// <summary>
-        /// 获取下标 index 的路由元素
+        /// 获取下标 index 的过滤器元素
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        public DirectoryElement this[int index]
+        public MvcGlobalFilterElement this[int index]
         {
             get
             {
-                return this.DirectoryElements[index];
+                return this.GlobalFilterElements[index];
             }
         }
 
@@ -42,34 +42,34 @@ namespace YuYu.Components
         /// </summary>
         protected override string ElementName
         {
-            get { return DirectoryKey; }
+            get { return FilterKey; }
         }
 
         /// <summary>
-        /// 路由元素组
+        /// 过滤器元素组
         /// </summary>
-        public virtual DirectoryElement[] DirectoryElements
+        public virtual MvcGlobalFilterElement[] GlobalFilterElements
         {
             get
             {
-                return this.Cast<DirectoryElement>().ToArray();
+                return this.Cast<MvcGlobalFilterElement>().OrderBy(e => e.Order).ToArray();
             }
         }
 
         /// <summary>
-        /// 添加路由元素
+        /// 添加过滤器元素
         /// </summary>
         /// <param name="element"></param>
-        public void Add(DirectoryElement element)
+        public void Add(MvcGlobalFilterElement element)
         {
             base.BaseAdd(element);
         }
 
         /// <summary>
-        /// 移除路由元素
+        /// 移除过滤器元素
         /// </summary>
         /// <param name="element"></param>
-        public void Remove(DirectoryElement element)
+        public void Remove(MvcGlobalFilterElement element)
         {
             base.BaseRemove(GetElementKey(element));
         }
@@ -80,7 +80,7 @@ namespace YuYu.Components
         /// <returns></returns>
         protected override ConfigurationElement CreateNewElement()
         {
-            return new DirectoryElement();
+            return new MvcGlobalFilterElement();
         }
 
         /// <summary>

@@ -7,25 +7,25 @@ using System.Text;
 namespace YuYu.Components
 {
     /// <summary>
-    /// 
+    /// WebApi集合类
     /// </summary>
-    public class FileCollection : ConfigurationElementCollection
+    public class WebApiRouteCollection : ConfigurationElementCollection
     {
         /// <summary>
         /// 元素名称
         /// </summary>
-        public const string IncludeKey = "file";
+        public const string RouteKey = "route";
 
         /// <summary>
-        /// 获取下标 index 的路由元素
+        /// 获取下标 index 的WebApi元素
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        public FileElement this[int index]
+        public WebApiRouteElement this[int index]
         {
             get
             {
-                return this.FileElements[index];
+                return this.RouteElements[index];
             }
         }
 
@@ -34,7 +34,10 @@ namespace YuYu.Components
         /// </summary>
         public override ConfigurationElementCollectionType CollectionType
         {
-            get { return ConfigurationElementCollectionType.BasicMap; }
+            get
+            {
+                return ConfigurationElementCollectionType.BasicMap;
+            }
         }
 
         /// <summary>
@@ -42,34 +45,34 @@ namespace YuYu.Components
         /// </summary>
         protected override string ElementName
         {
-            get { return IncludeKey; }
+            get { return RouteKey; }
         }
 
         /// <summary>
-        /// 路由元素组
+        /// WebApi元素组
         /// </summary>
-        public virtual FileElement[] FileElements
+        public virtual WebApiRouteElement[] RouteElements
         {
             get
             {
-                return this.Cast<FileElement>().ToArray();
+                return this.Cast<WebApiRouteElement>().ToArray();
             }
         }
 
         /// <summary>
-        /// 添加路由元素
+        /// 添加WebApi元素
         /// </summary>
         /// <param name="element"></param>
-        public void Add(FileElement element)
+        public void Add(WebApiRouteElement element)
         {
             base.BaseAdd(element);
         }
 
         /// <summary>
-        /// 移除路由元素
+        /// 移除WebApi元素
         /// </summary>
         /// <param name="element"></param>
-        public void Remove(FileElement element)
+        public void Remove(WebApiRouteElement element)
         {
             base.BaseRemove(GetElementKey(element));
         }
@@ -80,7 +83,7 @@ namespace YuYu.Components
         /// <returns></returns>
         protected override ConfigurationElement CreateNewElement()
         {
-            return new FileElement();
+            return new WebApiRouteElement();
         }
 
         /// <summary>

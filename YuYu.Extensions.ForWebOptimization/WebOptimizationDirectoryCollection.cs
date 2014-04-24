@@ -7,25 +7,25 @@ using System.Text;
 namespace YuYu.Components
 {
     /// <summary>
-    /// 属性集合类
+    /// 
     /// </summary>
-    public class PropertyCollection : ConfigurationElementCollection
+    public class WebOptimizationDirectoryCollection : ConfigurationElementCollection
     {
         /// <summary>
         /// 元素名称
         /// </summary>
-        public const string PropertyKey = "property";
+        public const string DirectoryKey = "directory";
 
         /// <summary>
-        /// 取得下标 index 的属性元素
+        /// 获取下标 index 的路由元素
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        public PropertyElement this[int index]
+        public WebOptimizationDirectoryElement this[int index]
         {
             get
             {
-                return this.PropertyElements[index];
+                return this.DirectoryElements[index];
             }
         }
 
@@ -42,54 +42,34 @@ namespace YuYu.Components
         /// </summary>
         protected override string ElementName
         {
-            get { return PropertyKey; }
+            get { return DirectoryKey; }
         }
 
         /// <summary>
-        /// 属性元素组
+        /// 路由元素组
         /// </summary>
-        public virtual PropertyElement[] PropertyElements
+        public virtual WebOptimizationDirectoryElement[] DirectoryElements
         {
             get
             {
-                return this.Cast<PropertyElement>().ToArray();
+                return this.Cast<WebOptimizationDirectoryElement>().ToArray();
             }
         }
 
         /// <summary>
-        /// 创建匿名对象
-        /// </summary>
-        /// <returns></returns>
-        internal virtual object CreateObject()
-        {
-            StringBuilder builder = new StringBuilder();
-            builder.AppendLine("namespace __temp");
-            builder.AppendLine("{");
-            builder.AppendLine("public class __temp");
-            builder.AppendLine("{");
-            foreach (var item in this.PropertyElements)
-            {
-                builder.AppendLine(item.PropertyString);
-            }
-            builder.AppendLine("}");
-            builder.AppendLine("}");
-            return HelperBase.CreateObject(builder.ToString(), new string[] { "System.dll", AppDomain.CurrentDomain.BaseDirectory + "bin\\System.Web.Mvc.dll" });
-        }
-
-        /// <summary>
-        /// 添加属性元素
+        /// 添加路由元素
         /// </summary>
         /// <param name="element"></param>
-        public void Add(PropertyElement element)
+        public void Add(WebOptimizationDirectoryElement element)
         {
             base.BaseAdd(element);
         }
 
         /// <summary>
-        /// 移除属性元素
+        /// 移除路由元素
         /// </summary>
         /// <param name="element"></param>
-        public void Remove(PropertyElement element)
+        public void Remove(WebOptimizationDirectoryElement element)
         {
             base.BaseRemove(GetElementKey(element));
         }
@@ -100,7 +80,7 @@ namespace YuYu.Components
         /// <returns></returns>
         protected override ConfigurationElement CreateNewElement()
         {
-            return new PropertyElement();
+            return new WebOptimizationDirectoryElement();
         }
 
         /// <summary>

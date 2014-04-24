@@ -534,7 +534,7 @@ namespace YuYu.Components
                 if (domainRoute != null)
                 {
                     DomainData domain = domainRoute.GetDomainData(new RequestContext(currentContext, routeData), routeData.Values);
-                    return htmlHelper.ActionLink(linkText, actionName, controllerName, domain.Protocol, domain.HostName, string.Empty, routeData.Values, null);
+                    return htmlHelper.ActionLink(linkText, actionName, controllerName, domain.Protocol, domain.Host, string.Empty, routeData.Values, null);
                 }
             }
             return htmlHelper.ActionLink(linkText, actionName, controllerName, routeValues, htmlAttributes);

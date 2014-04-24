@@ -8,24 +8,24 @@ using System.Text;
 namespace YuYu.Components
 {
     /// <summary>
-    /// 路由配置节
+    /// 
     /// </summary>
-    public class YuYuMvcRouteCollectionConfigurationSection : ConfigurationSection
+    public class WebOptimizationFileElement : ConfigurationElement
     {
         /// <summary>
-        /// 路由配置节
+        /// 虚拟路径键
         /// </summary>
-        public const string RoutesKey = "routes";
+        public const string VirtualPathKey = "virtualPath";
 
         /// <summary>
-        /// 路由集合
+        /// 虚拟路径
         /// </summary>
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        [ConfigurationProperty(RoutesKey, IsRequired = true)]
-        public virtual MvcRouteCollection Routes
+        [ConfigurationProperty(VirtualPathKey, IsRequired = true)]
+        public string VirtualPath
         {
-            get { return (MvcRouteCollection)this[RoutesKey]; }
-            set { this[RoutesKey] = value; }
+            get { return (string)this[VirtualPathKey]; }
+            set { this[VirtualPathKey] = value; }
         }
     }
 }

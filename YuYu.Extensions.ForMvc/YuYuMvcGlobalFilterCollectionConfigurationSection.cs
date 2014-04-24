@@ -15,17 +15,17 @@ namespace YuYu.Components
         /// <summary>
         /// 过滤器配置节
         /// </summary>
-        public const string FiltersKey = "filters";
+        public const string GlobalFiltersKey = "globalFilters";
 
         /// <summary>
         /// 过滤器集合
         /// </summary>
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        [ConfigurationProperty(FiltersKey, IsRequired = true)]
-        public virtual FilterCollection Filters
+        [ConfigurationProperty(GlobalFiltersKey, IsRequired = true)]
+        public virtual MvcGlobalFilterCollection GlobalFilters
         {
-            get { return (FilterCollection)this[FiltersKey]; }
-            set { this[FiltersKey] = value; }
+            get { return (MvcGlobalFilterCollection)this[GlobalFiltersKey]; }
+            set { this[GlobalFiltersKey] = value; }
         }
     }
 }

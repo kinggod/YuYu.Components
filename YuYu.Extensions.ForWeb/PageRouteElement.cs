@@ -5,7 +5,6 @@ using System.Configuration;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
-using System.Web.Mvc;
 using System.Web.Routing;
 
 namespace YuYu.Components
@@ -13,7 +12,7 @@ namespace YuYu.Components
     /// <summary>
     /// 路由元素类
     /// </summary>
-    public class RouteElement : ConfigurationElement
+    public class PageRouteElement : ConfigurationElement
     {
         /// <summary>
         /// 路由名称属性键
@@ -41,6 +40,16 @@ namespace YuYu.Components
         public const string UrlKey = "url";
 
         /// <summary>
+        /// 路由处理程序类属性键
+        /// </summary>
+        public const string PhysicalFileKey = "physicalFile";
+
+        /// <summary>
+        /// 路由处理程序类属性键
+        /// </summary>
+        public const string CheckPhysicalUrlAccessKey = "checkPhysicalUrlAccess";
+
+        /// <summary>
         /// 默认值集合键
         /// </summary>
         public const string DefaultsKey = "defaults";
@@ -49,16 +58,6 @@ namespace YuYu.Components
         /// 路由约束集合键
         /// </summary>
         public const string ConstraintsKey = "constraints";
-
-        /// <summary>
-        /// 命名空间属性键
-        /// </summary>
-        public const string NamespacesKey = "namespaces";
-
-        /// <summary>
-        /// 路由处理程序类属性键
-        /// </summary>
-        public const string RouteHandlerTypeKey = "routeHandlerType";
 
         /// <summary>
         /// 路由名称
@@ -116,10 +115,32 @@ namespace YuYu.Components
         }
 
         /// <summary>
+        /// 表示路由控制程序类型的字符串
+        /// </summary>
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        [ConfigurationProperty(PhysicalFileKey, IsRequired = true)]
+        public string PhysicalFile
+        {
+            get { return (string)this[PhysicalFileKey]; }
+            set { this[PhysicalFileKey] = value; }
+        }
+
+        /// <summary>
+        /// 表示路由控制程序类型的字符串
+        /// </summary>
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        [ConfigurationProperty(CheckPhysicalUrlAccessKey)]
+        public bool CheckPhysicalUrlAccess
+        {
+            get { return (bool)this[CheckPhysicalUrlAccessKey]; }
+            set { this[CheckPhysicalUrlAccessKey] = value; }
+        }
+
+        /// <summary>
         /// 默认值集合
         /// </summary>
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        [ConfigurationProperty(DefaultsKey, IsRequired = true)]
+        [ConfigurationProperty(DefaultsKey)]
         public PropertyCollection Defaults
         {
             get { return (PropertyCollection)this[DefaultsKey]; }
@@ -135,40 +156,6 @@ namespace YuYu.Components
         {
             get { return (PropertyCollection)this[ConstraintsKey]; }
             set { this[ConstraintsKey] = value; }
-        }
-
-        /// <summary>
-        /// 命名空间
-        /// </summary>
-        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        [ConfigurationProperty(NamespacesKey)]
-        public string Namespaces
-        {
-            get { return (string)this[NamespacesKey]; }
-            set { this[NamespacesKey] = value; }
-        }
-
-        /// <summary>
-        /// 表示路由控制程序类型的字符串
-        /// </summary>
-        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        [ConfigurationProperty(RouteHandlerTypeKey)]
-        public string RouteHandlerType
-        {
-            get { return (string)this[RouteHandlerTypeKey]; }
-            set { this[RouteHandlerTypeKey] = value; }
-        }
-
-        /// <summary>
-        /// 获取路由控制类实例对象
-        /// </summary>
-        /// <returns></returns>
-        public IRouteHandler CreateRouteHandlerInstance()
-        {
-            IRouteHandler routeHandler = null;
-            if(!string.IsNullOrWhiteSpace(RouteHandlerType))
-                routeHandler = Activator.CreateInstance(System.Type.GetType(RouteHandlerType)) as IRouteHandler;
-            return routeHandler ?? new MvcRouteHandler();
         }
     }
 }

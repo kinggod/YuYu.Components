@@ -8,24 +8,24 @@ using System.Text;
 namespace YuYu.Components
 {
     /// <summary>
-    /// 
+    /// 路由配置节
     /// </summary>
-    public class FileElement : ConfigurationElement
+    public class YuYuRouteCollectionConfigurationSection : ConfigurationSection
     {
         /// <summary>
-        /// 虚拟路径键
+        /// 路由配置节
         /// </summary>
-        public const string VirtualPathKey = "virtualPath";
+        public const string RoutesKey = "routes";
 
         /// <summary>
-        /// 虚拟路径
+        /// 路由集合
         /// </summary>
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        [ConfigurationProperty(VirtualPathKey, IsRequired = true)]
-        public string VirtualPath
+        [ConfigurationProperty(RoutesKey, IsRequired = true)]
+        public virtual PageRouteCollection Routes
         {
-            get { return (string)this[VirtualPathKey]; }
-            set { this[VirtualPathKey] = value; }
+            get { return (PageRouteCollection)this[RoutesKey]; }
+            set { this[RoutesKey] = value; }
         }
     }
 }

@@ -14,19 +14,19 @@ namespace YuYu.Components
     public class YuYuWebApiHttpConfigurationConfigurationSection : ConfigurationSection
     {
         /// <summary>
-        /// webApi配置节
+        /// webApi集合配置节
         /// </summary>
-        public const string WebApisKey = "webApis";
+        public const string RoutesKey = "routes";
 
         /// <summary>
         /// WebApi集合
         /// </summary>
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        [ConfigurationProperty(WebApisKey)]
-        public virtual WebApiCollection WebApis
+        [ConfigurationProperty(RoutesKey)]
+        public virtual WebApiRouteCollection Routes
         {
-            get { return (WebApiCollection)this[WebApisKey]; }
-            set { this[WebApisKey] = value; }
+            get { return (WebApiRouteCollection)this[RoutesKey]; }
+            set { this[RoutesKey] = value; }
         }
     }
 }

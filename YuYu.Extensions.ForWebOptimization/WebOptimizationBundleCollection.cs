@@ -9,7 +9,7 @@ namespace YuYu.Components
     /// <summary>
     /// 捆绑配置集合
     /// </summary>
-    public class BundleCollection : ConfigurationElementCollection
+    public class WebOptimizationBundleCollection : ConfigurationElementCollection
     {
         /// <summary>
         /// 元素名称
@@ -21,7 +21,7 @@ namespace YuYu.Components
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        public BundleElement this[int index]
+        public WebOptimizationBundleElement this[int index]
         {
             get
             {
@@ -48,11 +48,11 @@ namespace YuYu.Components
         /// <summary>
         /// 路由元素组
         /// </summary>
-        public virtual BundleElement[] BundleElements
+        public virtual WebOptimizationBundleElement[] BundleElements
         {
             get
             {
-                return this.Cast<BundleElement>().ToArray();
+                return this.Cast<WebOptimizationBundleElement>().ToArray();
             }
         }
 
@@ -60,7 +60,7 @@ namespace YuYu.Components
         /// 添加路由元素
         /// </summary>
         /// <param name="element"></param>
-        public void Add(BundleElement element)
+        public void Add(WebOptimizationBundleElement element)
         {
             base.BaseAdd(element);
         }
@@ -69,7 +69,7 @@ namespace YuYu.Components
         /// 移除路由元素
         /// </summary>
         /// <param name="element"></param>
-        public void Remove(BundleElement element)
+        public void Remove(WebOptimizationBundleElement element)
         {
             base.BaseRemove(GetElementKey(element));
         }
@@ -80,7 +80,7 @@ namespace YuYu.Components
         /// <returns></returns>
         protected override ConfigurationElement CreateNewElement()
         {
-            return new BundleElement();
+            return new WebOptimizationBundleElement();
         }
 
         /// <summary>

@@ -7,25 +7,25 @@ using System.Text;
 namespace YuYu.Components
 {
     /// <summary>
-    /// WebApi集合类
+    /// 
     /// </summary>
-    public class WebApiCollection : ConfigurationElementCollection
+    public class WebOptimizationFileCollection : ConfigurationElementCollection
     {
         /// <summary>
         /// 元素名称
         /// </summary>
-        public const string WebApiKey = "webApi";
+        public const string IncludeKey = "file";
 
         /// <summary>
-        /// 获取下标 index 的WebApi元素
+        /// 获取下标 index 的路由元素
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        public WebApiElement this[int index]
+        public WebOptimizationFileElement this[int index]
         {
             get
             {
-                return this.WebApiElements[index];
+                return this.FileElements[index];
             }
         }
 
@@ -34,10 +34,7 @@ namespace YuYu.Components
         /// </summary>
         public override ConfigurationElementCollectionType CollectionType
         {
-            get
-            {
-                return ConfigurationElementCollectionType.BasicMap;
-            }
+            get { return ConfigurationElementCollectionType.BasicMap; }
         }
 
         /// <summary>
@@ -45,34 +42,34 @@ namespace YuYu.Components
         /// </summary>
         protected override string ElementName
         {
-            get { return WebApiKey; }
+            get { return IncludeKey; }
         }
 
         /// <summary>
-        /// WebApi元素组
+        /// 路由元素组
         /// </summary>
-        public virtual WebApiElement[] WebApiElements
+        public virtual WebOptimizationFileElement[] FileElements
         {
             get
             {
-                return this.Cast<WebApiElement>().ToArray();
+                return this.Cast<WebOptimizationFileElement>().ToArray();
             }
         }
 
         /// <summary>
-        /// 添加WebApi元素
+        /// 添加路由元素
         /// </summary>
         /// <param name="element"></param>
-        public void Add(WebApiElement element)
+        public void Add(WebOptimizationFileElement element)
         {
             base.BaseAdd(element);
         }
 
         /// <summary>
-        /// 移除WebApi元素
+        /// 移除路由元素
         /// </summary>
         /// <param name="element"></param>
-        public void Remove(WebApiElement element)
+        public void Remove(WebOptimizationFileElement element)
         {
             base.BaseRemove(GetElementKey(element));
         }
@@ -83,7 +80,7 @@ namespace YuYu.Components
         /// <returns></returns>
         protected override ConfigurationElement CreateNewElement()
         {
-            return new WebApiElement();
+            return new WebOptimizationFileElement();
         }
 
         /// <summary>

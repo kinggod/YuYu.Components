@@ -10,7 +10,7 @@ namespace YuYu.Components
     /// <summary>
     /// 过滤器元素类
     /// </summary>
-    public class FilterElement : ConfigurationElement
+    public class MvcGlobalFilterElement : ConfigurationElement
     {
         /// <summary>
         /// 类型属性键

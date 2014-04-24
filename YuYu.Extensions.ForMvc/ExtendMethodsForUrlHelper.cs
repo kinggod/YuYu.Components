@@ -97,7 +97,7 @@ namespace YuYu.Components
                 if (domainRoute != null)
                 {
                     DomainData domain = domainRoute.GetDomainData(urlHelper.RequestContext, routeValues);
-                    string urlString = urlHelper.Action(actionName, controllerName, routeValues, domain.Protocol, domain.HostName);
+                    string urlString = urlHelper.Action(actionName, controllerName, routeValues, domain.Protocol, domain.Host);
                     return Regex.Replace(urlString, @"\:\d+", domain.Port > 0 ? ":" + domain.Port : string.Empty);
                 }
             }
@@ -124,7 +124,7 @@ namespace YuYu.Components
                 if (domainRoute != null)
                 {
                     DomainData domain = domainRoute.GetDomainData(urlHelper.RequestContext, routeValueDictionary);
-                    string urlString = urlHelper.Action(actionName, controllerName, new RouteValueDictionary(routeValues), protocol, domain.HostName);
+                    string urlString = urlHelper.Action(actionName, controllerName, new RouteValueDictionary(routeValues), protocol, domain.Host);
                     return Regex.Replace(urlString, @"\:\d+", domain.Port > 0 ? ":" + domain.Port : string.Empty);
                 }
             }

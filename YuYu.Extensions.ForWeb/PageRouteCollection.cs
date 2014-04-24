@@ -7,26 +7,23 @@ using System.Text;
 namespace YuYu.Components
 {
     /// <summary>
-    /// 过滤器集合类
+    /// 路由集合类
     /// </summary>
-    public class FilterCollection : ConfigurationElementCollection
+    public class PageRouteCollection : ConfigurationElementCollection
     {
         /// <summary>
         /// 元素名称
         /// </summary>
-        public const string FilterKey = "filter";
+        public const string RouteKey = "route";
 
         /// <summary>
-        /// 获取下标 index 的过滤器元素
+        /// 获取下标 index 的路由元素
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        public FilterElement this[int index]
+        public PageRouteElement this[int index]
         {
-            get
-            {
-                return this.FilterElements[index];
-            }
+            get { return this.RouteElements[index]; }
         }
 
         /// <summary>
@@ -42,34 +39,31 @@ namespace YuYu.Components
         /// </summary>
         protected override string ElementName
         {
-            get { return FilterKey; }
+            get { return RouteKey; }
         }
 
         /// <summary>
-        /// 过滤器元素组
+        /// 路由元素组
         /// </summary>
-        public virtual FilterElement[] FilterElements
+        public virtual PageRouteElement[] RouteElements
         {
-            get
-            {
-                return this.Cast<FilterElement>().OrderBy(e => e.Order).ToArray();
-            }
+            get { return this.Cast<PageRouteElement>().ToArray(); }
         }
 
         /// <summary>
-        /// 添加过滤器元素
+        /// 添加路由元素
         /// </summary>
         /// <param name="element"></param>
-        public void Add(FilterElement element)
+        public void Add(PageRouteElement element)
         {
             base.BaseAdd(element);
         }
 
         /// <summary>
-        /// 移除过滤器元素
+        /// 移除路由元素
         /// </summary>
         /// <param name="element"></param>
-        public void Remove(FilterElement element)
+        public void Remove(PageRouteElement element)
         {
             base.BaseRemove(GetElementKey(element));
         }
@@ -80,7 +74,7 @@ namespace YuYu.Components
         /// <returns></returns>
         protected override ConfigurationElement CreateNewElement()
         {
-            return new FilterElement();
+            return new PageRouteElement();
         }
 
         /// <summary>

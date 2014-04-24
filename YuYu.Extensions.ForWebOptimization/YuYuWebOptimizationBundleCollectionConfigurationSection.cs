@@ -10,7 +10,7 @@ namespace YuYu.Components
     /// <summary>
     /// YuYu配置块
     /// </summary>
-    public class YuYuWebBundleCollectionConfigurationSection : ConfigurationSection
+    public class YuYuWebOptimizationBundleCollectionConfigurationSection : ConfigurationSection
     {
         /// <summary>
         /// 捆绑配置节
@@ -22,9 +22,9 @@ namespace YuYu.Components
         /// </summary>
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         [ConfigurationProperty(BundlesKey, IsRequired = true)]
-        public virtual BundleCollection Bundles
+        public virtual WebOptimizationBundleCollection Bundles
         {
-            get { return (BundleCollection)this[BundlesKey]; }
+            get { return (WebOptimizationBundleCollection)this[BundlesKey]; }
             set { this[BundlesKey] = value; }
         }
     }

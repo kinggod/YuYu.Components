@@ -11,7 +11,7 @@ namespace YuYu.Components
     /// <summary>
     /// WebApi元素类
     /// </summary>
-    public class WebApiElement : ConfigurationElement
+    public class WebApiRouteElement : ConfigurationElement
     {
         /// <summary>
         /// WebApi名称键
@@ -97,11 +97,14 @@ namespace YuYu.Components
         /// 创建WebApi处理程序实例对象
         /// </summary>
         /// <returns></returns>
-        internal HttpMessageHandler CreateHandlerInstance()
+        internal HttpMessageHandler Handler
         {
-            if (string.IsNullOrWhiteSpace(HandlerType))
-                return null;
-            return Activator.CreateInstance(System.Type.GetType(HandlerType)) as HttpMessageHandler;
+            get
+            {
+                if (string.IsNullOrWhiteSpace(HandlerType))
+                    return null;
+                return Activator.CreateInstance(System.Type.GetType(HandlerType)) as HttpMessageHandler;
+            }
         }
     }
 }
