@@ -15,16 +15,16 @@ namespace YuYu.Components
         /// <summary>
         /// 路由配置节
         /// </summary>
-        public const string RoutesSectionKey = "routeCollection";
+        public const string YuYuFileRouteCollectionConfigurationSectionKey = "routeCollection";
 
         /// <summary>
         /// 路由配置节
         /// </summary>
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        [ConfigurationProperty(RoutesSectionKey, IsRequired = true)]
+        [ConfigurationProperty(YuYuFileRouteCollectionConfigurationSectionKey, IsRequired = true)]
         public virtual YuYuFileRouteCollectionConfigurationSection YuYuFileRouteCollectionConfigurationSection
         {
-            get { return (YuYuFileRouteCollectionConfigurationSection)this.Sections[RoutesSectionKey]; }
+            get { return (YuYuFileRouteCollectionConfigurationSection)this.Sections[YuYuFileRouteCollectionConfigurationSectionKey]; }
         }
     }
 }

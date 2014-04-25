@@ -14,25 +14,14 @@ namespace YuYu.Components
     public class YuYuFileRouteCollectionConfigurationSection : ConfigurationSection
     {
         /// <summary>
-        /// 路由配置节
-        /// </summary>
-        public const string RoutesKey = "routes";
-
-        /// <summary>
         /// DefaultRouteHandlerType键
         /// </summary>
         public const string DefaultRouteHandlerTypeKey = "defaultRouteHandlerType";
 
         /// <summary>
-        /// 路由集合
+        /// 路由配置节
         /// </summary>
-        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        [ConfigurationProperty(RoutesKey, IsRequired = true)]
-        public virtual FileRouteCollection Routes
-        {
-            get { return (FileRouteCollection)this[RoutesKey]; }
-            set { this[RoutesKey] = value; }
-        }
+        public const string RoutesKey = "routes";
 
         /// <summary>
         /// 表示路由控制程序类型的字符串
@@ -46,13 +35,24 @@ namespace YuYu.Components
         }
 
         /// <summary>
+        /// 路由集合
+        /// </summary>
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        [ConfigurationProperty(RoutesKey, IsRequired = true)]
+        public virtual FileRouteCollection Routes
+        {
+            get { return (FileRouteCollection)this[RoutesKey]; }
+            set { this[RoutesKey] = value; }
+        }
+
+        /// <summary>
         /// RouteHandler
         /// </summary>
         public IRouteHandler CreateDefaultRouteHandler(string physicalFile, bool checkPhysicalUrlAccess)
         {
             IRouteHandler routeHandler = null;
-            if (!string.IsNullOrWhiteSpace(DefaultRouteHandlerType))
-                routeHandler = Activator.CreateInstance(System.Type.GetType(DefaultRouteHandlerType), physicalFile, checkPhysicalUrlAccess) as IRouteHandler;
+            if (!string.IsNullOrWhiteSpace(this.DefaultRouteHandlerType))
+                routeHandler = Activator.CreateInstance(Type.GetType(this.DefaultRouteHandlerType), physicalFile, checkPhysicalUrlAccess) as IRouteHandler;
             return routeHandler ?? new PageRouteHandler(physicalFile, checkPhysicalUrlAccess);
         }
     }
