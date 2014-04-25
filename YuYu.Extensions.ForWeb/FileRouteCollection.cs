@@ -9,7 +9,7 @@ namespace YuYu.Components
     /// <summary>
     /// 路由集合类
     /// </summary>
-    public class PageRouteCollection : ConfigurationElementCollection
+    public class FileRouteCollection : ConfigurationElementCollection
     {
         /// <summary>
         /// 元素名称
@@ -21,7 +21,7 @@ namespace YuYu.Components
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        public PageRouteElement this[int index]
+        public FileRouteElement this[int index]
         {
             get { return this.RouteElements[index]; }
         }
@@ -45,16 +45,16 @@ namespace YuYu.Components
         /// <summary>
         /// 路由元素组
         /// </summary>
-        public virtual PageRouteElement[] RouteElements
+        public virtual FileRouteElement[] RouteElements
         {
-            get { return this.Cast<PageRouteElement>().ToArray(); }
+            get { return this.Cast<FileRouteElement>().ToArray(); }
         }
 
         /// <summary>
         /// 添加路由元素
         /// </summary>
         /// <param name="element"></param>
-        public void Add(PageRouteElement element)
+        public void Add(FileRouteElement element)
         {
             base.BaseAdd(element);
         }
@@ -63,7 +63,7 @@ namespace YuYu.Components
         /// 移除路由元素
         /// </summary>
         /// <param name="element"></param>
-        public void Remove(PageRouteElement element)
+        public void Remove(FileRouteElement element)
         {
             base.BaseRemove(GetElementKey(element));
         }
@@ -74,7 +74,7 @@ namespace YuYu.Components
         /// <returns></returns>
         protected override ConfigurationElement CreateNewElement()
         {
-            return new PageRouteElement();
+            return new FileRouteElement();
         }
 
         /// <summary>

@@ -23,14 +23,14 @@ namespace YuYu.Components
         /// <param name="routes">RouteCollection</param>
         public static void RegisterPageRoutes(System.Web.Routing.RouteCollection routes)
         {
-            foreach (PageRouteElement route in YuYuWebConfigurationSectionGroup.RoutesSection.Routes.RouteElements)
+            foreach (FileRouteElement route in YuYuWebConfigurationSectionGroup.YuYuFileRouteCollectionConfigurationSection.Routes.RouteElements)
             {
                 RouteValueDictionary defaults = RouteValueDictionaryHelper.CreateRouteValueDictionary(route.Defaults.CreateObject());
                 RouteValueDictionary constraints = RouteValueDictionaryHelper.CreateRouteValueDictionary(route.Constraints.CreateObject());
                 if (string.IsNullOrWhiteSpace(route.Domain))
-                    routes.MapPageRoute(route.Name, route.Url, route.PhysicalFile, route.CheckPhysicalUrlAccess, defaults, constraints);
+                    routes.Add(route.Name, new Route(route.Url, defaults, constraints, route.RouteHandler ?? YuYuWebConfigurationSectionGroup.YuYuFileRouteCollectionConfigurationSection.CreateDefaultRouteHandler(route.PhysicalFile, route.CheckPhysicalUrlAccess)));
                 else
-                    routes.Add(route.Name, new DomainRoute(route.Domain, route.Url, new PageRouteHandler(route.PhysicalFile, route.CheckPhysicalUrlAccess))
+                    routes.Add(route.Name, new DomainRoute(route.Domain, route.Url, route.RouteHandler ?? YuYuWebConfigurationSectionGroup.YuYuFileRouteCollectionConfigurationSection.CreateDefaultRouteHandler(route.PhysicalFile, route.CheckPhysicalUrlAccess))
                     {
                         Defaults = defaults,
                         Constraints = constraints,

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Configuration;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Web.Routing;
@@ -12,7 +13,7 @@ namespace YuYu.Components
     /// <summary>
     /// 路由元素类
     /// </summary>
-    public class PageRouteElement : ConfigurationElement
+    public class FileRouteElement : ConfigurationElement
     {
         /// <summary>
         /// 路由名称属性键
@@ -58,6 +59,11 @@ namespace YuYu.Components
         /// 路由约束集合键
         /// </summary>
         public const string ConstraintsKey = "constraints";
+
+        /// <summary>
+        /// RouteHandlerType键
+        /// </summary>
+        public const string RouteHandlerTypeKey = "routeHandlerType";
 
         /// <summary>
         /// 路由名称
@@ -115,7 +121,7 @@ namespace YuYu.Components
         }
 
         /// <summary>
-        /// 表示路由控制程序类型的字符串
+        /// 表示映射到的物理文件
         /// </summary>
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         [ConfigurationProperty(PhysicalFileKey, IsRequired = true)]
@@ -123,6 +129,17 @@ namespace YuYu.Components
         {
             get { return (string)this[PhysicalFileKey]; }
             set { this[PhysicalFileKey] = value; }
+        }
+
+        /// <summary>
+        /// 表示路由控制程序类型的字符串
+        /// </summary>
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        [ConfigurationProperty(RouteHandlerTypeKey)]
+        public string RouteHandlerType
+        {
+            get { return (string)this[RouteHandlerTypeKey]; }
+            set { this[RouteHandlerTypeKey] = value; }
         }
 
         /// <summary>
@@ -156,6 +173,20 @@ namespace YuYu.Components
         {
             get { return (PropertyCollection)this[ConstraintsKey]; }
             set { this[ConstraintsKey] = value; }
+        }
+
+        /// <summary>
+        /// RouteHandler
+        /// </summary>
+        public IRouteHandler RouteHandler
+        {
+            get
+            {
+                IRouteHandler routeHandler = null;
+                if (!string.IsNullOrWhiteSpace(RouteHandlerType))
+                    routeHandler = Activator.CreateInstance(System.Type.GetType(RouteHandlerType), this.PhysicalFile, this.CheckPhysicalUrlAccess) as IRouteHandler;
+                return routeHandler;
+            }
         }
     }
 }

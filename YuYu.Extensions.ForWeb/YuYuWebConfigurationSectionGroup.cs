@@ -22,9 +22,9 @@ namespace YuYu.Components
         /// </summary>
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         [ConfigurationProperty(RoutesSectionKey, IsRequired = true)]
-        public virtual YuYuRouteCollectionConfigurationSection RoutesSection
+        public virtual YuYuFileRouteCollectionConfigurationSection YuYuFileRouteCollectionConfigurationSection
         {
-            get { return (YuYuRouteCollectionConfigurationSection)this.Sections[RoutesSectionKey]; }
+            get { return (YuYuFileRouteCollectionConfigurationSection)this.Sections[RoutesSectionKey]; }
         }
     }
 }

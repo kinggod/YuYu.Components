@@ -66,14 +66,16 @@
     <Compile Include="MailHelper.cs" />
     <Compile Include="PropertyCollection.cs" />
     <Compile Include="PropertyElement.cs" />
-    <Compile Include="PageRouteCollection.cs" />
-    <Compile Include="PageRouteElement.cs" />
+    <Compile Include="FileRouteCollection.cs" />
+    <Compile Include="FileRouteElement.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegexHelper.cs" />
     <Compile Include="RouteValueDictionaryHelper.cs" />
     <Compile Include="UploadResult.cs" />
+    <Compile Include="YuYuFileRouteCollectionConfigurationSection.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="YuYuFilter.cs" />
-    <Compile Include="YuYuRouteCollectionConfigurationSection.cs" />
     <Compile Include="YuYuWebConfigurationManager.cs" />
     <Compile Include="YuYuWebConfigurationSectionGroup.cs" />
   </ItemGroup>
