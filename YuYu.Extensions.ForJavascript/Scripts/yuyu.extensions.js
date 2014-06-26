@@ -83,7 +83,7 @@ Date.prototype.format = function (format) {
 };
 Date.fromJSON = function (JSONDate) {
     try {
-        return new Date(parseFloat(dateString.replace('/Date(', '').replace(')/', '')));
+        return new Date(parseFloat(JSONDate.replace('/Date(', '').replace(')/', '')));
     } catch (exception) {
         alert(exception.message);
     }
