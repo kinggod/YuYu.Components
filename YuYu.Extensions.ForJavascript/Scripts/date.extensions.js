@@ -11,10 +11,10 @@
         return ((v.length > 1 ? '0' : '') + eval('z.' + v.slice(-1))).slice(-(v.length > 2 ? v.length : 2));
     });
 };
-Date.fromJSON = function (JSONDate) {
+Date.fromJSON = function (jsonDate) {
     try {
-        return new Date(parseFloat(JSONDate.replace('/Date(', '').replace(')/', '')));
+        return new Date(parseFloat(jsonDate.replace('/Date(', '').replace(')/', '')));
     } catch (exception) {
-        alert(exception.message);
+        return null;
     }
 };
