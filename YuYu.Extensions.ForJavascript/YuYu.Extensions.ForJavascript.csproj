@@ -61,6 +61,7 @@
     <Content Include="Scripts\number.extensions.min.js" />
     <Content Include="Scripts\yuyu.extensions.js" />
     <Content Include="Scripts\yuyu.extensions.min.js" />
+    <Content Include="test.html" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
