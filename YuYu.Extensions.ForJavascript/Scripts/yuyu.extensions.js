@@ -82,32 +82,39 @@ Date.prototype.format = function (format) {
     });
 };
 Date.prototype.addMillionSeconds = function (millionSeconds) {
-    this.setMilliseconds(this.getMilliseconds() + millionSeconds);
-    return this;
+    var date = new Date(this.getTime());
+    date.setMilliseconds(date.getMilliseconds() + millionSeconds);
+    return date;
 };
 Date.prototype.addSeconds = function (seconds) {
-    this.setSeconds(this.getSeconds() + seconds);
-    return this;
+    var date = new Date(this.getTime());
+    date.setSeconds(this.getSeconds() + seconds);
+    return date;
 };
 Date.prototype.addMinutes = function (minutes) {
-    this.setMinutes(this.getMinutes() + minutes);
-    return this;
+    var date = new Date(this.getTime());
+    date.setMinutes(date.getMinutes() + minutes);
+    return date;
 };
 Date.prototype.addHours = function (hours) {
-    this.setHours(this.getHours() + hours);
-    return this;
+    var date = new Date(this.getTime());
+    date.setHours(date.getHours() + hours);
+    return date;
 };
 Date.prototype.addDays = function (days) {
-    this.setDate(this.getDate() + days);
-    return this;
+    var date = new Date(this.getTime());
+    date.setDate(date.getDate() + days);
+    return date;
 };
 Date.prototype.addMonths = function (months) {
-    this.setMonth(this.getMonth() + months);
-    return this;
+    var date = new Date(this.getTime());
+    date.setMonth(date.getMonth() + months);
+    return date;
 };
 Date.prototype.addYears = function (years) {
-    this.setYear(this.getYear() + years);
-    return this;
+    var date = new Date(this.getTime());
+    date.setYear(date.getYear() + years);
+    return date;
 };
 Date.fromJSON = function (jsonDate) {
     try {
