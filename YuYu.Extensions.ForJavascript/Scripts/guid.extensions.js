@@ -3,8 +3,9 @@ function Guid(input) {
     //存放32位数值的数组
     var array = new Array();
     array.initByOther = function () {
-        for (var i = 0; i < 32; i++)
+        for (var i = 0; i < 32; i++) {
             array.push('0');
+        }
     };
     array.initByString = function (input) {
         input = input.replace(/\{|\(|\)|\}|\-/g, '');
@@ -12,8 +13,9 @@ function Guid(input) {
         if (input.length != 32 || input.search(/[^0-9,a-f]/i) >= 0)
             array.initByOther();
         else
-            for (var i = 0; i < input.length; i++)
+            for (var i = 0; i < input.length; i++) {
                 array.push(input[i]);
+            }
     };
     if (typeof (input) === 'string')  //如果构造函数的参数为字符串
         array.initByString(input);
@@ -56,15 +58,16 @@ function Guid(input) {
                     return new Guid();
             }
         else
-            return this.toString('D')
+            return this.toString('D');
     };
 };
 //Guid 类的默认实例，其值保证均为零。
-Guid.Empty = new Guid();
+Guid.empty = new Guid();
 //初始化 Guid 类的一个新实例。
-Guid.NewGuid = function () {
+Guid.newGuid = function () {
     var string = '';
-    for (var i = 0; i < 32; i++)
+    for (var i = 0; i < 32; i++) {
         string += Math.floor(Math.random() * 16.0).toString(16);
+    }
     return new Guid(string);
 };

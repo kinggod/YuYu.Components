@@ -3,8 +3,9 @@ function Guid(input) {
     //存放32位数值的数组
     var array = new Array();
     array.initByOther = function () {
-        for (var i = 0; i < 32; i++)
+        for (var i = 0; i < 32; i++) {
             array.push('0');
+        }
     };
     array.initByString = function (input) {
         input = input.replace(/\{|\(|\)|\}|\-/g, '');
@@ -12,8 +13,9 @@ function Guid(input) {
         if (input.length != 32 || input.search(/[^0-9,a-f]/i) >= 0)
             array.initByOther();
         else
-            for (var i = 0; i < input.length; i++)
+            for (var i = 0; i < input.length; i++) {
                 array.push(input[i]);
+            }
     };
     if (typeof (input) === 'string')  //如果构造函数的参数为字符串
         array.initByString(input);
@@ -56,16 +58,17 @@ function Guid(input) {
                     return new Guid();
             }
         else
-            return this.toString('D')
+            return this.toString('D');
     };
 };
 //Guid 类的默认实例，其值保证均为零。
-Guid.Empty = new Guid();
+Guid.empty = new Guid();
 //初始化 Guid 类的一个新实例。
-Guid.NewGuid = function () {
+Guid.newGuid = function () {
     var string = '';
-    for (var i = 0; i < 32; i++)
+    for (var i = 0; i < 32; i++) {
         string += Math.floor(Math.random() * 16.0).toString(16);
+    }
     return new Guid(string);
 };
 Date.prototype.format = function (format) {
@@ -125,31 +128,31 @@ Date.fromJSON = function (jsonDate) {
 };
 Number.prototype.plus = function (arg) {
     var r1, r2, m;
-    try { r1 = this.toString().split('.')[1].length } catch (e) { r1 = 0 }
-    try { r2 = arg.toString().split('.')[1].length } catch (e) { r2 = 0 }
-    m = Math.pow(10, Math.max(r1, r2))
+    try { r1 = this.toString().split('.')[1].length; } catch (e) { r1 = 0; }
+    try { r2 = arg.toString().split('.')[1].length; } catch (e) { r2 = 0; }
+    m = Math.pow(10, Math.max(r1, r2));
     return (this * m + arg * m) / m;
 };
 Number.prototype.minus = function (arg) {
     var r1, r2, m, n;
-    try { r1 = this.toString().split('.')[1].length } catch (e) { r1 = 0 }
-    try { r2 = arg.toString().split('.')[1].length } catch (e) { r2 = 0 }
+    try { r1 = this.toString().split('.')[1].length; } catch (e) { r1 = 0; }
+    try { r2 = arg.toString().split('.')[1].length; } catch (e) { r2 = 0; }
     m = Math.pow(10, Math.max(r1, r2));
     n = (r1 >= r2) ? r1 : r2;
     return Number(((this * m - arg * m) / m).toFixed(n));
 };
 Number.prototype.multipy = function (arg) {
     var m = 0, s1 = this.toString(), s2 = arg.toString();
-    try { m += s1.split('.')[1].length } catch (e) { }
-    try { m += s2.split('.')[1].length } catch (e) { }
-    return Number(s1.replace('.', '')) * Number(s2.replace('.', '')) / Math.pow(10, m)
+    try { m += s1.split('.')[1].length; } catch (e) { }
+    try { m += s2.split('.')[1].length; } catch (e) { }
+    return Number(s1.replace('.', '')) * Number(s2.replace('.', '')) / Math.pow(10, m);
 };
 Number.prototype.divide = function (arg) {
     var t1 = 0, t2 = 0, r1, r2;
-    try { t1 = this.toString().split('.')[1].length } catch (e) { }
-    try { t2 = arg.toString().split('.')[1].length } catch (e) { }
-    r1 = Number(this.toString().replace('.', ''))
-    r2 = Number(arg.toString().replace('.', ''))
+    try { t1 = this.toString().split('.')[1].length; } catch (e) { }
+    try { t2 = arg.toString().split('.')[1].length; } catch (e) { }
+    r1 = Number(this.toString().replace('.', ''));
+    r2 = Number(arg.toString().replace('.', ''));
     return (r1 / r2) * Math.pow(10, t2 - t1);
 };
 Number.prototype.toCNNumber = function (upperOrLower) {
